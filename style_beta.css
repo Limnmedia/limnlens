@@ -575,3 +575,98 @@ canvas {
   color: #444;
   text-decoration: underline;
 }
+/* ===============================
+   RESPONSIVE: MOBILE FIRST
+   =============================== */
+@media (max-width: 600px) {
+  body {
+    padding: 0 1em;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    padding-bottom: 0.2em;
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .card,
+  .intro-box,
+  #imageThumbnailSection,
+  #manualDataDisplay,
+  #manualDataInput {
+    padding: 1.2em;
+    margin: 1em auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: auto;
+    box-sizing: border-box;
+  }
+
+  .asciiSplash {
+    font-size: 0.85rem;
+    padding: 1em;
+  }
+
+  .thumbRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5em;
+  }
+
+  .thumbControls,
+  .pointControl,
+  .toggleRow {
+    flex-direction: column;
+    gap: 0.6em;
+    width: 100%;
+  }
+
+  button {
+    width: 100%;
+    min-width: auto;
+    font-size: 0.95em;
+    padding: 0.8em 1.2em;
+  }
+
+  .form-field input {
+    max-width: 100%;
+  }
+
+  .status-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3em;
+  }
+
+  .label,
+  .value {
+    flex: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .status-indicator {
+    min-width: auto;
+    width: 100%;
+    text-align: center;
+  }
+
+  .latex-block {
+    font-size: 1em;
+    padding: 0.8em;
+  }
+
+  #appFooter {
+    padding: 1.5em 1em;
+  }
+
+  .toc-nav {
+    font-size: 0.9em;
+    flex-wrap: wrap;
+  }
+}
