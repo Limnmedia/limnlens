@@ -578,95 +578,83 @@ canvas {
 /* ===============================
    RESPONSIVE: MOBILE FIRST
    =============================== */
-@media (max-width: 600px) {
-  body {
-    padding: 0 1em;
+@media (max-width: 480px) {
+  html, body {
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+  }
+
+  #mainUI {
+    padding: 1em 0.5em;
   }
 
   h1 {
-    font-size: 1.5rem;
-    padding-bottom: 0.2em;
-    line-height: 1.2;
+    font-size: 1.3rem;
+    line-height: 1.3;
+    padding: 0.4em 0;
   }
 
-  h2 {
-    font-size: 1.2rem;
+  h2, h3 {
+    font-size: 1.1rem;
+    line-height: 1.3;
     text-align: center;
   }
 
-  .card,
-  .intro-box,
-  #imageThumbnailSection,
-  #manualDataDisplay,
-  #manualDataInput {
-    padding: 1.2em;
+  .card, .intro-box {
+    padding: 1em;
     margin: 1em auto;
     width: 100%;
     max-width: 100%;
-    min-width: auto;
     box-sizing: border-box;
   }
 
   .asciiSplash {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     padding: 1em;
+    line-height: 1.3;
+    overflow-x: auto;
   }
 
   .thumbRow {
     flex-direction: column;
-    align-items: flex-start;
     gap: 0.5em;
+    align-items: flex-start;
   }
 
-  .thumbControls,
-  .pointControl,
-  .toggleRow {
+  .thumbControls, .pointControl, .toggleRow {
     flex-direction: column;
-    gap: 0.6em;
+    align-items: stretch;
     width: 100%;
   }
 
   button {
     width: 100%;
-    min-width: auto;
-    font-size: 0.95em;
-    padding: 0.8em 1.2em;
-  }
-
-  .form-field input {
-    max-width: 100%;
+    font-size: 0.95rem;
+    padding: 0.9em 1em;
+    min-width: unset;
   }
 
   .status-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.3em;
-  }
-
-  .label,
-  .value {
-    flex: none;
-    width: 100%;
     text-align: left;
+    gap: 0.2em;
   }
 
   .status-indicator {
-    min-width: auto;
     width: 100%;
-    text-align: center;
+    font-size: 0.75rem;
   }
 
   .latex-block {
-    font-size: 1em;
-    padding: 0.8em;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    padding: 0.6em;
   }
 
   #appFooter {
-    padding: 1.5em 1em;
-  }
-
-  .toc-nav {
-    font-size: 0.9em;
-    flex-wrap: wrap;
+    padding: 1.2em 0.6em;
+    font-size: 0.85em;
   }
 }
