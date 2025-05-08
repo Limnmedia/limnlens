@@ -1,0 +1,1 @@
+Please open an issue before submitting changes. No modifications may be redistributed without written approval from LIMNMEDIA.
