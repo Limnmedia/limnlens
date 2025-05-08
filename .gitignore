@@ -1,0 +1,62 @@
+# Byte-compiled / virtual environment files
+__pycache__/
+*.py[cod]
+*.so
+
+# Jupyter notebooks (if used)
+*.ipynb_checkpoints
+
+# Environment files
+.env
+.venv/
+env/
+venv/
+*.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# SQLite or test database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Data exports or test outputs
+*.csv~
+*.bak
+*.log
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+
+# VS Code project folder
+.vscode/
+
+# Mac metadata
+Icon?
+
+# Python cache and debug logs
+*.log
+*.out
+
+# If you ever use poetry or pipenv
+poetry.lock
+Pipfile.lock
+
+# Ignore raw import repos
+data/imports/RawTherapee/
+data/imports/Camera-Sensor-Database/
+data/imports/CameraSensorSizeDatabase/
+
+# Ignore Python envs and compiled junk
+.venv/
+__pycache__/
+*.pyc
+
+# Ignore test outputs, debug logs
+*.log
+*.csv~
+/html/LENSMap-Profile-Creator/old/exifHandler.js

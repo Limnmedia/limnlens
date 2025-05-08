@@ -1,0 +1,1017 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- ✅ Basic HTML Setup -->
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- Ensures mobile responsiveness -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- Improves compatibility with older IE browsers -->
+
+        <!-- 🔍 SEO Essentials -->
+        <meta
+            name="description"
+            content="TPS LENSMap: A tool for camera and lens calibration using Two Point Scale measurements. Built by LIMNMEDIA." />
+        <!-- ✏️ Update description: Write a short, compelling description of your tool for search results -->
+
+        <meta name="author" content="LIMNMEDIA" />
+        <meta name="robots" content="index, follow" />
+        <!-- Allow search engine indexing -->
+        <meta
+            name="keywords"
+            content="TPS, lens calibration, camera scale, focal length calculator, LIMNMEDIA, stop-motion, photogrammetry, VFX tools" />
+        <!-- ✏️ Update keywords: Add 8–15 specific keywords relevant to your app/tool -->
+
+        <!-- 🌐 Open Graph (for social platforms like Facebook, LinkedIn) -->
+        <meta property="og:title" content="TPS LENSMap — Camera & Lens Calibration Tool" />
+        <!-- ✏️ This is the main social media title -->
+
+        <meta
+            property="og:description"
+            content="Measure effective focal length from images using baseline distance and sensor specs. An open tool for precision calibration." />
+        <!-- ✏️ Social media snippet text -->
+
+        <meta property="og:image" content="https://yourdomain.com/img/social-preview.png" />
+        <!-- 🔁 Replace this with the full public URL to your social preview image (1200x630px recommended) -->
+
+        <meta property="og:url" content="https://yourdomain.com/" />
+        <!-- 🔁 Replace with the actual URL where your app is hosted -->
+
+        <meta property="og:type" content="website" />
+        <!-- Tells platforms this is a webpage -->
+
+        <!-- 🐦 Twitter Card Setup -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <!-- Use large preview image style -->
+        <meta name="twitter:title" content="TPS LENSMap — Camera & Lens Calibration Tool" />
+        <meta
+            name="twitter:description"
+            content="Built for animators and VFX artists. Capture, measure, and calculate focal length with precision." />
+        <meta name="twitter:image" content="https://yourdomain.com/img/social-preview.png" />
+        <!-- 🔁 Same image as OG is fine — replace with hosted file -->
+        <title>LIMNMEDIA TPS LENSMap</title>
+        <!-- KaTeX for rendering LaTeX -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+        <script
+            defer
+            src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body);"
+            crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="./style_beta.css" />
+    </head>
+    <body>
+        <header class="limn-header" role="banner" aria-label="LIMNMEDIA branding">
+            <img id="logo" src="../img/logo.png" alt="LIMNMEDIA logo with stylized graphic" />
+        </header>
+
+        <h1>LIMNMEDIA.T.P.S : L.E.N.S.MAP</h1>
+
+        <div id="mainUI">
+            <section
+                id="tps-lensmap-intro"
+                style="
+                    padding: 1rem;
+                    background: #f8f8f8;
+                    border: 3px solid #000000;
+                    border-radius: 8px;
+                    margin-top: 1em;
+                ">
+                <p style="font-size: 1.05em; line-height: 1.6; color: #555">
+                    LENSMap is an artist- and animator-friendly calibration tool designed specifically to address the
+                    unique challenges of stop-motion and miniature VFX workflows.<br />Lock down the lens. Unlock the
+                    shot.
+                </p>
+                <p style="font-size: 1.05em; line-height: 1.6; color: #555">
+                    Effective Focal Length (EFL) + Nodal Point = Stop-Motion Camera, ready for multi-pass and CG
+                    integration. <br />EFL gives scale + FOV. Nodal point gives origin. Together, you get a full virtual
+                    camera for CG-practical crossover.
+                </p>
+                <p style="font-size: 1.05em; line-height: 1.6; color: #555">
+                    Calculate the effective focal length (EFL) at the focus distance (FD).
+                </p>
+                <p>Nodal calibration locks down the camera’s point of view.</p>
+                <p style="font-size: 1.05em; line-height: 1.6; color: #555">
+                    Locking down the EFL and nodal point unlocks the full potential of the stop-motion camera
+                </p>
+            </section>
+
+            <section id="howTo" class="card">
+                <section class="card">
+                    <details id="workflowGuide" class="customDetails">
+                        <summary style="font-size: 1em; font-weight: bold; cursor: pointer">How to Use LENSMap</summary>
+                        <section>
+                            <nav class="toc-nav">
+                                <a href="#step1-research">Research</a>
+                                <a href="#step2-capture">Capture</a>
+                                <a href="#step3-measure">Measure</a>
+                                <a href="#step4-load">Load</a>
+                                <a href="#step5-data">Data</a>
+                                <a href="#step6-calc">Calc</a>
+                                <a href="#step7-log">Log</a>
+                            </nav>
+                            <div
+                                style="
+                                    padding: 1rem;
+                                    background: #6565fd;
+                                    border: 3px solid #585858;
+                                    border-radius: 8px;
+                                    margin-top: 1em;
+                                ">
+                                <section id="step1-research" class="workflowStep" aria-labelledby="Step one, reasearch">
+                                    <h3>Step 1: Research</h3>
+
+                                    <ul>
+                                        <li>
+                                            <ul>
+                                                <li>
+                                                    Sensor Width (mm) The most critical parameter for all subsequent
+                                                    calculations. It defines the real-world reference for horizontal
+                                                    scale and must be obtained from official manufacturer specifications
+                                                    or reliable databases.
+                                                </li>
+                                                <li>
+                                                    Sensor Height (mm) (Optional) Used to compute vertical FOV and
+                                                    aspect ratio-dependent calculations. While not essential for focal
+                                                    length computation, it becomes relevant for full-frame
+                                                    reconstruction and depth accuracy.s
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <strong>Gather essential tools:</strong>
+                                            <ul style="padding-left: 1.5em; margin-top: 0.5em">
+                                                <li>
+                                                    <strong>Ruler or Measuring Tape</strong> — For baseline real-world
+                                                    measurements (preferably metric, millimeters for better precision).
+                                                </li>
+                                                <li>
+                                                    <strong>Calipers (Vernier or Digital)</strong> — For small or very
+                                                    precise measurements, like distances between fine points on
+                                                    close-range calibration targets.
+                                                </li>
+                                                <li>
+                                                    <strong>Laser Distance Measurer</strong> — For fast, high-accuracy
+                                                    distance readings at longer ranges (optional but recommended).
+                                                </li>
+                                                <li>
+                                                    <strong>Tripod</strong> — To stabilize the camera during image
+                                                    capture; prevents motion blur and misalignment.
+                                                </li>
+                                                <li>
+                                                    <strong>Focus Chart or Target</strong> — Printed Siemens star,
+                                                    checkerboard, ruler, or any high-contrast flat surface for picking
+                                                    scale references precisely.
+                                                </li>
+                                                <li>
+                                                    <strong>Textured Surface</strong> — If no printed chart is
+                                                    available, detailed real-world textures (brick walls, book spines,
+                                                    patterned surfaces) plus a scale object (like a ruler) work well.
+                                                </li>
+                                                <li>
+                                                    <strong>Shutter Remote or Self-Timer</strong> — To avoid camera
+                                                    movement by touching the shutter button directly.
+                                                </li>
+                                                <li>
+                                                    <strong>Lighting Equipment</strong> — Soft, diffuse lighting (lamps,
+                                                    reflectors, window light) to minimize glare and create even
+                                                    illumination.
+                                                </li>
+                                                <li>
+                                                    <strong>Find</strong> your camera’s sensor width (in millimeters).
+                                                    Enter this in the TPS calculator, "Sensow Width" below.
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                        <li>
+                                            <strong>Popular camera manufacturers</strong>
+                                            <ul>
+                                                <li>
+                                                    <a href="https://www.usa.canon.com/cameras" target="_blank"
+                                                        >Canon Cameras</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a href="https://www.nikonusa.com/" target="_blank"
+                                                        >Nikon Cameras</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a href="https://www.sony.com/" target="_blank">Sony Cameras</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://www.panasonic.com/" target="_blank"
+                                                        >Panasonic Lumix</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="https://www.fujifilm.com/products/digital_cameras/"
+                                                        target="_blank"
+                                                        >Fujifilm Cameras</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a href="https://explore.omsystem.com/us/en/cameras" target="_blank"
+                                                        >Olympus (OM System)</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="https://www.leica-camera.com/en-US/photography/cameras"
+                                                        target="_blank"
+                                                        >Leica Cameras</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a href="https://www.hasselblad.com" target="_blank"
+                                                        >Hasselblad Medium Format</a
+                                                    >
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                        <li>
+                                            <strong>Download Example Calibration Images:</strong>
+                                            <ul>
+                                                <li>
+                                                    <a
+                                                        href="https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/raw/main/sample-calibration1.jpg"
+                                                        target="_blank"
+                                                        >📷 Sample Calibration Image 1</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/raw/main/sample-calibration2.jpg"
+                                                        target="_blank"
+                                                        >📷 Sample Calibration Image 2</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/raw/main/sample-calibration3.jpg"
+                                                        target="_blank"
+                                                        >📷 Sample Calibration Image 3</a
+                                                    >
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                        <li>
+                                            <strong>Use Precise Measurement Tools:</strong>
+                                            <ul>
+                                                <li id="laser-distance-link">
+                                                    Laser measuring tools provide quick, highly accurate distance
+                                                    measurements from the camera to the target, making them ideal for
+                                                    precise scale calibration in stop-motion workflows. A single
+                                                    operator can easily measure without needing a second person or
+                                                    stretching a tape. For best results, use a standard measuring tape
+                                                    or a
+                                                    <a
+                                                        href="https://en.wikipedia.org/wiki/Laser_rangefinder"
+                                                        target="_blank"
+                                                        >Laser Distance Measurer (Wikipedia)</a
+                                                    >
+                                                    for accurate distance measurement.
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                        <li>
+                                            <strong>Confirm exact sensor width</strong> from official specs or reliable
+                                            databases.
+                                        </li>
+                                        <li>
+                                            <strong>Enter</strong> your camera’s sensor width (in millimeters) in the
+                                            TPS calculator form, "Sensow Width" below.
+                                        </li>
+                                    </ul>
+                                    <ul class="proTip">
+                                        <li>
+                                            <strong>Pro Tip for Users:</strong> “When measuring distances between close
+                                            points (like checkerboard squares), digital calipers can achieve much
+                                            greater accuracy than trying to read with a ruler.”
+                                        </li>
+                                    </ul>
+                                </section>
+                                <div class="back-to-top"><a href="#workflowGuide">↑ Back to Top</a></div>
+
+                                <section id="step2-capture" class="workflowStep">
+                                    <h2>Step 2: Capture</h2>
+                                    <h3>Image Acquisition Under Controlled Conditions</h3>
+                                    <p>
+                                        Set up your camera on a tripod and take a photo of two clear points that are
+                                        flat and straight in front of the lens (not tilted). You can use a printed
+                                        target or choose two sharp, visible spots in the scene. Keep the camera still,
+                                        use good lighting, and make sure nothing is blurry.
+                                    </p>
+                                    <p>
+                                        To enable accurate triangulation, identify
+                                        <strong>two clearly defined reference points</strong> within the scene. These
+                                        points must lie on a flat surface that is
+                                        <strong>perpendicular to the optical axis</strong> (i.e., parallel to the sensor
+                                        plane). Correct placement minimizes parallax distortion and ensures reliable
+                                        baseline measurement.
+                                    </p>
+
+                                    <ul>
+                                        <li>
+                                            <strong>Option 1: Use a Printed Calibration Target</strong> — Place a
+                                            printed Siemens star, checkerboard, or ruler into the scene. Attach it to a
+                                            card or prop that stands upright and sits flat on the ground plane. This
+                                            provides a reliable and known distance between two target points.
+                                        </li>
+
+                                        <li>
+                                            <strong>Option 2: Use Natural Scene Features</strong> — Choose two
+                                            high-contrast, sharply defined points within the image (e.g., corners of
+                                            bricks, bolts, printed text, decals). For accuracy:
+                                            <ul>
+                                                <li>Ensure both points are on the same surface or plane.</li>
+                                                <li>
+                                                    That surface must be perpendicular to the lens axis (e.g., ground
+                                                    plane, back wall).
+                                                </li>
+                                                <li>
+                                                    Measure the real-world distance between those points using a ruler
+                                                    or calipers.
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                        <li>
+                                            <strong>Set up</strong> the scene with proper lighting. Use even, diffuse
+                                            illumination to avoid shadows or glare on your target points.
+                                        </li>
+                                        <li>
+                                            <strong>Stabilize</strong> the camera. Use a tripod, fix the exposure and
+                                            focus manually, and disable stabilization systems (IBIS/OIS).
+                                        </li>
+                                        <li>
+                                            <strong>Capture</strong> multiple focus distances, ideally starting from
+                                            infinity and progressing to minimum focus.
+                                        </li>
+                                    </ul>
+
+                                    <p class="proTip">
+                                        💡 <strong>Pro Tip:</strong> A labeled index card with a marked baseline and
+                                        known real-world spacing makes a great reusable calibration prop. Secure it flat
+                                        and perpendicular to the lens for best results.
+                                    </p>
+                                </section>
+                                <div class="back-to-top"><a href="#workflowGuide">↑ Back to Top</a></div>
+
+                                <section id="step3-measure" class="workflowStep">
+                                    <h2>Step 3: Measure</h2>
+
+                                    <p>
+                                        <strong>Capturing Geometric Inputs</strong><br />
+                                        Now that you’ve taken the photo, it’s time to measure a few key things. First,
+                                        measure the real-world distance between the two points you picked in your scene.
+                                        This is called the baseline, and it tells the system how big things are in real
+                                        life. Next, use the app to check how many pixels apart those same two points are
+                                        in your image. You can also (optionally) measure the distance from your camera’s
+                                        sensor to the middle of the lens — this is called the nodal point. It helps when
+                                        doing more advanced things like mixing real footage with CGI or doing multiple
+                                        passes of the same shot. This step establishes the physical-to-digital
+                                        relationship between your calibration image and the real world.
+                                    </p>
+
+                                    <ul>
+                                        <li>
+                                            <strong>Baseline Distance (mm):</strong><br />
+                                            The physical distance between your two selected target points. This value
+                                            serves as your primary real-world scale reference. Measure with precision
+                                            using a <em>ruler</em>, <em>calipers</em>, or
+                                            <em>something very accurate</em>. Accuracy here directly affects all
+                                            subsequent focal length and scale calculations.
+                                        </li>
+
+                                        <li>
+                                            <strong>Baseline Distance (px):</strong><br />
+                                            The pixel distance between the same two points, measured directly within the
+                                            image using the LENSMap tool. This value determines the pixel density
+                                            (px/mm) used for all focal length derivations.
+                                        </li>
+
+                                        <li>
+                                            <strong
+                                                >Entrance Pupil Offset (Δ) — Nodal Point Offset
+                                                <em>(Optional but Recommended)</em>:</strong
+                                            ><br />
+                                            The distance from the camera’s sensor plane (Φ) to the lens’s no-parallax
+                                            (nodal) point. This value enables accurate mechanical calibration and is
+                                            essential for clean parallax-free multi-pass shooting, compositing
+                                            miniatures into live-action, and matching CG perspectives.
+                                        </li>
+                                    </ul>
+                                    <hr />
+                                    <h4>🔧 How to Measure the Nodal Point Offset</h4>
+                                    <ul>
+                                        <li>
+                                            Mount your camera on a stable tripod with a sliding rail or panoramic plate.
+                                            If you don't have one, you can build a basic rail using a flat metal bar
+                                            with a ¼-20 threaded tripod hole and a sliding slot with a captive screw to
+                                            secure the camera.
+                                        </li>
+                                        <li>
+                                            ⚠️ <strong>Caution:</strong> When fabricating a DIY rail, ensure the camera
+                                            is tightly secured and stable before tilting or panning. Avoid unsupported
+                                            cantilevered setups. If in doubt, consult a machinist or experienced camera
+                                            technician.
+                                        </li>
+                                        <li>
+                                            Place two vertical alignment markers: one close (e.g., tape on a light
+                                            stand), one distant (e.g., window frame, post).
+                                        </li>
+                                        <li>Frame the scene so both markers align in the center of the view.</li>
+                                        <li>
+                                            Pan left/right slightly and observe if the markers shift relative to each
+                                            other.
+                                        </li>
+                                        <li>Slide the camera forward or backward along the optical axis.</li>
+                                        <li>
+                                            The nodal (non-parallax) point is reached when the two markers stay aligned
+                                            during panning.
+                                        </li>
+                                        <li>
+                                            Measure the distance from this nodal point to the sensor plane mark (Φ) on
+                                            your camera body.
+                                        </li>
+                                    </ul>
+                                    <hr />
+                                    <p>
+                                        🛠️ <strong>DIY Tip:</strong> A sliding plate can be made using a flat steel or
+                                        aluminum bar with a ¼-20 threaded hole (for mounting to a tripod head) and a
+                                        machined slot for a screw that fits your camera’s tripod socket. Use a washer
+                                        and rubber pad to prevent rotation.
+                                    </p>
+
+                                    <p>
+                                        🎯 <strong>Why it matters:</strong> The nodal point defines the camera’s
+                                        geometric center for parallax-free panning — essential for VFX, miniature
+                                        integration, and CG camera matching.
+                                    </p>
+
+                                    <p>
+                                        🔬 <strong>Typical Ranges:</strong> Many lenses have a nodal point offset
+                                        between <strong>30–70 mm</strong> from the camera sensor plane (Φ), though this
+                                        can vary with lens design and focal length. Shorter lenses may have closer nodal
+                                        points, while telephoto and zoom lenses tend to push the nodal point farther
+                                        forward.
+                                    </p>
+
+                                    <p>
+                                        💡 <strong>Breathing Effect:</strong> Some lenses exhibit
+                                        <em>focus breathing</em> — a change in field of view as focus shifts. This can
+                                        slightly affect nodal offset, so for precision work (e.g., in miniature or CG
+                                        integration), measure at the actual focus distance used in your shot.
+                                    </p>
+                                    <hr />
+                                    <ul>
+                                        <li>
+                                            <strong>Measure</strong> the physical distance from the sensor plane (Φ) to
+                                            the subject target. <strong>FOCUS DISTANCE</strong>
+                                        </li>
+                                        <li>
+                                            <strong>Measure</strong> the baseline (real-world) distance between the two
+                                            target points. <strong>BASELINE DISTANCE (mm)</strong>
+                                        </li>
+                                        <li>
+                                            <strong>Measure</strong> the offset between the sensor plane and the optical
+                                            center of the lens (non-parallax point).
+                                            <strong>ENTRANCE PUPIL OFFSET (Nodal Offset)</strong>
+                                        </li>
+                                        <li>
+                                            <strong>Log</strong> all measurements immediately to minimize human error
+                                            and improve repeatability.
+                                        </li>
+                                    </ul>
+                                </section>
+                                <div class="back-to-top"><a href="#workflowGuide">↑ Back to Top</a></div>
+
+                                <section id="step4-load" class="workflowStep">
+                                    <h3>Step 4: Load Image</h3>
+                                    <h4>Preprocessing and Metadata Awareness</h4>
+                                    <ul>
+                                        <li>
+                                            <strong>Scale Transformations:</strong> Scaling the image while preserving
+                                            aspect ratio does not affect the calculation. Pixel-based ratios remain
+                                            accurate, allowing the system to compute focal length and field of view
+                                            correctly.
+                                        </li>
+                                        <li>
+                                            <strong>Cropping:</strong> Cropping the image alters the field of view and
+                                            simulates the effect of a smaller sensor. This artificially increases the
+                                            calculated effective focal length and pushes the perceived camera distance
+                                            farther than it actually is, introducing systemic error in depth and scale
+                                            reconstruction. <em>Cropping must be avoided.</em>
+                                        </li>
+                                    </ul>
+                                    <ul>
+                                        <li>
+                                            <strong>Upload</strong> your captured calibration image into TPS LENSMap.
+                                        </li>
+                                        <li>
+                                            <strong>Inspect</strong> the image for sharpness, proper framing, and
+                                            visibility of the target points.
+                                        </li>
+                                    </ul>
+                                </section>
+                                <div class="back-to-top"><a href="#workflowGuide">↑ Back to Top</a></div>
+
+                                <section id="step5-data" class="workflowStep">
+                                    <h3>Step 5: Data Entry</h3>
+                                    <h4>Consolidating Inputs for Calculation</h4>
+                                    • Sensor Width (mm) • Sensor Height (mm) (Optional) • Baseline Distance (mm) •
+                                    Baseline Distance (px) • Image Width (px) • Image Height (px) • Entrance Pupil
+                                    Offset (Δ) (Optional) Each input must be verified for unit consistency. Incorrect
+                                    units (e.g. cm vs. mm, or px vs. % scaling) will produce exponentially compounding
+                                    errors in output values.
+                                    <ul>
+                                        <li>
+                                            <strong>Enter</strong> Sensor Width (mm), Image Width (pixels), Baseline
+                                            Distance (mm), Baseline Pixel Distance (px), and Focus Distance (mm).
+                                        </li>
+                                        <li><strong>Double-check</strong> all units carefully before calculation.</li>
+                                    </ul>
+                                </section>
+                                <div class="back-to-top"><a href="#workflowGuide">↑ Back to Top</a></div>
+
+                                <section id="step6-calc" class="workflowStep">
+                                    <h3>Step 6: Calculate</h3>
+                                    <h4>Deriving Camera Parameters Upon running the TPS formula</h4>
+                                    , the system will compute: • Pixel Density (px/mm) Converts spatial resolution into
+                                    real-world scale. • Field of View (FOV) Real-world field width seen by the sensor,
+                                    based on image resolution and pixel density. • Angle of View (AOV) The angular
+                                    projection of the field of view; defines the cone of vision and drives the lens
+                                    equation. • Effective Focal Length (EFL) Derived from sensor width and AOV.
+                                    Represents the actual magnification power of the lens. • Crop Factor A normalized
+                                    value comparing your sensor’s width to a 35mm full-frame reference. Useful for
+                                    cross-platform lens equivalence.
+                                    <ul>
+                                        <li>
+                                            <strong>Press Calculate</strong> to compute pixel density, effective focal
+                                            length, and crop factor.
+                                        </li>
+                                        <li>
+                                            <strong>Review</strong> results to confirm plausibility and spot any obvious
+                                            errors.
+                                        </li>
+                                    </ul>
+                                </section>
+                                <div class="back-to-top"><a href="#workflowGuide">↑ Back to Top</a></div>
+
+                                <section id="step7-log" class="workflowStep">
+                                    <h3>Step 7: Log and Archive</h3>
+                                    Step 7: Log and Archive — Build a Repeatable Calibration Dataset • Record all
+                                    measurement values, sensor data, image filenames, and output results into a
+                                    structured LENSMap profile. • Store raw input images, measurement logs, and result
+                                    snapshots in versioned folders. • Use consistent naming conventions and
+                                    date/timestamp metadata to ensure traceability. • These records enable long-term
+                                    tracking of optical performance and provide reusable calibration references across
+                                    projects, especially when working with fixed or repeatable camera rigs.
+                                    <ul>
+                                        <li>
+                                            <strong>Record</strong> all measurements, image filenames, and calculated
+                                            values.
+                                        </li>
+                                        <li>
+                                            <strong>Organize</strong> into your lens calibration dataset or LENSMap
+                                            profiles.
+                                        </li>
+                                    </ul>
+                                </section>
+                                <div class="back-to-top"><a href="#workflowGuide">↑ Back to Top</a></div>
+                            </div>
+                        </section>
+                    </details>
+                    <!-- ------------------------------------------------------------------------------------------------------------ CAPTURE GUIDE -->
+
+                    <details id="captureGuide" class="customDetails">
+                        <summary style="font-size: 1em; font-weight: bold; cursor: pointer">
+                            How to Capture Calibration Images
+                        </summary>
+
+                        <div
+                            style="
+                                padding: 1rem;
+                                background: #6565fd;
+                                border: 3px solid #585858;
+                                border-radius: 8px;
+                                margin-top: 1em;
+                            ">
+                            <section id="capture-target" class="captureStep">
+                                <h4>1. Use a Target — or Real-World Features</h4>
+                                <p>
+                                    📏 Printed charts, rulers, measuring tapes, or natural detailed surfaces work.
+                                    Combine with a known scale object like a yardstick if possible.
+                                </p>
+                            </section>
+
+                            <section id="capture-perpendicular" class="captureStep">
+                                <h4>2. Keep the Target Perpendicular</h4>
+                                <p>
+                                    🎯 Flatness and right angles matter — even slight tilts distort measurements and
+                                    calculations.
+                                </p>
+                            </section>
+
+                            <section id="capture-measure-distance" class="captureStep">
+                                <h4>3. Physically Measure Distance</h4>
+                                <p>
+                                    📐 Always measure from the camera’s sensor plane (Φ mark) to the target — not from
+                                    the lens front. Precision matters!
+                                </p>
+                            </section>
+
+                            <section id="capture-sensor-size" class="captureStep">
+                                <h4>4. Research and Confirm Sensor Size</h4>
+                                <p>
+                                    🔍 Manufacturer specs can vary. Double-check your camera's true sensor dimensions
+                                    (in millimeters).
+                                </p>
+                            </section>
+
+                            <section id="capture-manual-control" class="captureStep">
+                                <h4>5. Full Manual Control</h4>
+                                <ul style="padding-left: 1.2em; list-style: square">
+                                    <li>🔧 Manual focus</li>
+                                    <li>🔧 Manual exposure (fixed aperture, ISO, shutter)</li>
+                                    <li>🔧 Stabilization OFF (disable IBIS/OIS)</li>
+                                    <li>🔧 Use a tripod or firm mounting surface</li>
+                                </ul>
+                            </section>
+
+                            <section id="capture-highres" class="captureStep">
+                                <h4>6. High-Resolution, Uncropped Images</h4>
+                                <p>🖼️ Capture at full native sensor resolution. No cropping. No resizing.</p>
+                            </section>
+
+                            <section id="capture-multiple-focus" class="captureStep">
+                                <h4>7. Multiple Focus Distances</h4>
+                                <p>
+                                    🎥 Record focus stops across the range — aim for about 10 points spaced between
+                                    infinity and minimum focus.
+                                </p>
+                            </section>
+
+                            <section id="capture-lighting" class="captureStep">
+                                <h4>8. Lighting and Scene Conditions</h4>
+                                <p>
+                                    💡 Use even, diffuse lighting. Avoid harsh glare. Ensure no movement of the target
+                                    during capture.
+                                </p>
+                            </section>
+
+                            <section id="capture-good-practices" class="captureStep">
+                                <h4>9. Good Practices During Capture</h4>
+                                <ul style="padding-left: 1.2em; list-style: square">
+                                    <li>🕑 Use a remote shutter release or timer</li>
+                                    <li>🔒 Engage mirror lockup if available (DSLR)</li>
+                                    <li>🔁 Take backup shots at each focus distance</li>
+                                    <li>🔍 Inspect image sharpness immediately after capture</li>
+                                </ul>
+                            </section>
+
+                            <section id="capture-organize" class="captureStep">
+                                <h4>10. Annotate and Organize</h4>
+                                <p>
+                                    🗂️ Use clear filenames and maintain a detailed log of all measurements and capture
+                                    conditions for each shot.
+                                </p>
+                            </section>
+
+                            <hr style="margin: 2em 0; border: 0; border-top: 2px dashed #ccc" />
+
+                            <p style="font-weight: bold; font-size: 1.1em; text-align: center">
+                                🏆 Golden Rule: "Measure twice, shoot once. You can't 'fix it later' if you skip this
+                                step."
+                            </p>
+                        </div>
+                    </details>
+                </section>
+            </section>
+            <section>
+                <section id="imageThumbnailSection" class="card">
+                    <div class="thumbRow">
+                        <div class="thumbInfo">
+                            <h2 id="pointPickerH2">Point Picker</h2>
+                            <div id="thumbnailLabel">No image loaded</div>
+                        </div>
+                        <div id="thumbnailWrapper">
+                            <img id="imageThumbnail" alt="Thumbnail" src="./img/img.png" />
+                        </div>
+                    </div>
+
+                    <div class="thumbControls">
+                        <input type="file" id="fileInput" accept="image/*" />
+                        <button id="loadImageBtn">📂 Load Image</button>
+
+                        <div class="pointControl">
+                            <button id="pickPoint1Btn" disabled>📍 Pick Point 1</button>
+                            <button id="verifyPoint1Btn" disabled>🔍 Verify Point 1</button>
+                            <span id="point1Verified" class="status-indicator idle">Idle</span>
+                        </div>
+
+                        <div class="pointControl">
+                            <button id="pickPoint2Btn" disabled>📍 Pick Point 2</button>
+                            <button id="verifyPoint2Btn" disabled>🔍 Verify Point 2</button>
+                            <span id="point2Verified" class="status-indicator idle">Idle</span>
+                        </div>
+                        <div class="toggleRow">
+                            <button id="testToggleBtn" class="toggle-button">➕ Try Test Image</button>
+                            <button id="loadTestImageBtn" class="hidden">🧪 Load Test Image</button>
+                        </div>
+                    </div>
+                </section>
+                <br />
+                <div id="statusPanel" class="card">
+                    <div style="text-align: center">
+                        <h2>Pixel Distance</h2>
+                    </div>
+
+                    <div class="status-row">
+                        <span class="label">Image Center:</span>
+                        <span id="imageCenter" class="value">--</span>
+                    </div>
+
+                    <div class="status-row">
+                        <span class="label">Point 1:</span>
+                        <span id="pickedPoint1" class="value">--</span>
+                    </div>
+
+                    <div class="status-row">
+                        <span class="label">Point 2:</span>
+                        <span id="pickedPoint2" class="value">--</span>
+                    </div>
+
+                    <div class="form-field">
+                        <h5>Calculated pixel distance Point 1 ↔ Point 2:</h5>
+                        <span class="label"><strong>Baseline Distance (px)</strong> </span>
+                        <span id="pixelDistance" class="value">--</span>
+                    </div>
+
+                    <div style="text-align: center">
+                        <h2>Manual Data</h2>
+                    </div>
+                    <div class="form-field">
+                        <h5>Find the actual size of the camera sensor in millimeters.</h5>
+                        <label for="sensorWidth">Sensor Width (mm)</label>
+                        <input type="number" id="sensorWidth" placeholder="e.g. 36.0" />
+                    </div>
+
+                    <div class="form-field">
+                        <label for="sensorHeight">Sensor Height (mm)</label>
+                        <input type="number" id="sensorHeight" placeholder="e.g. 24.0" />
+                    </div>
+                    <div class="form-field">
+                        <h5>Measure the distance between Point 1 and Point 2 as accurately as possible.</h5>
+                        <label for="baselineDistance">Baseline Distance (mm)</label>
+                        <input type="number" id="baselineDistance" placeholder="Measured physical distance" />
+                    </div>
+
+                    <div class="form-field">
+                        <h5>Measure the distance from the sensor to the target. (sharpest focus)</h5>
+                        <label for="focusDistance">Focus Distance (mm)</label>
+                        <input type="number" id="focusDistance" placeholder="e.g. 1000 (1 meter)" />
+                    </div>
+
+                    <div class="form-field">
+                        <h5>Measure the distance from the sensor to the non-parralax point.</h5>
+
+                        Enter 0 if unknown.
+                        <label for="entrancePupilOffset">Entrance Pupil Offset (mm)</label>
+
+                        <input type="number" id="entrancePupilOffset" placeholder="e.g. 35.2" />
+                    </div>
+                    <button id="saveInputBtn">Save Manual Data</button>
+                </div>
+            </section>
+            <section id="manualDataDisplay" class="card">
+                <h2>Data Overview</h2>
+
+                <div class="status-row">
+                    <strong>Sensor Width (mm):</strong> <span id="displaySensorWidth" class="value">-- </span> mm
+                </div>
+                <div class="status-row">
+                    <strong>Image Width (px):</strong> <span id="displayImageWidth" class="value">-- </span> px
+                </div>
+                <div class="status-row">
+                    <strong>Sensor Height (mm):</strong> <span id="displaySensorHeight" class="value">-- </span> mm
+                </div>
+                <div class="status-row">
+                    <strong>Image Height (px):</strong> <span id="displayImageHeight" class="value">-- </span> mm
+                </div>
+                <div class="status-row">
+                    <strong>Baseline Distance (px):</strong>
+                    <span id="displayBaselineDistancePX" class="value">-- </span> px
+                </div>
+                <div class="status-row">
+                    <strong>Baseline Distance (mm):</strong>
+                    <span id="displayBaselineDistance" class="value">-- </span> mm
+                </div>
+                <div class="status-row">
+                    <strong>Focus Distance:</strong> <span id="displayFocusDistance" class="value">-- </span> mm
+                </div>
+            </section>
+            <br />
+            <section id="focalLengthOverview" class="card">
+                <h2>Focal Length Calculation (TPS)</h2>
+
+                <div class="status-row">
+                    <strong>Pixel Distance (P):</strong>
+                    <span id="displayPImage" class="value">--</span> px
+                </div>
+
+                <div class="status-row">
+                    <strong>Real Distance Between Points (D):</strong>
+                    <span id="displayDReal" class="value">--</span> mm
+                </div>
+
+                <div class="status-row">
+                    <strong>Image Width (W<sub>image</sub>):</strong>
+                    <span id="displayWImage" class="value">--</span> px
+                </div>
+
+                <div class="status-row">
+                    <strong>Sensor Width (W<sub>sensor</sub>):</strong>
+                    <span id="displayWSensor" class="value">--</span> mm
+                </div>
+
+                <div class="status-row">
+                    <strong>Sensor Distance to Subject (d<sub>sensor</sub>):</strong>
+                    <span id="displayDSensor" class="value">--</span> mm
+                </div>
+
+                <div class="status-row">
+                    <strong>Entrance Pupil Offset (Δ):</strong>
+                    <span id="displayDelta" class="value">--</span> mm
+                </div>
+
+                <hr />
+
+                <div class="status-row">
+                    <strong>Pixel per mm (P / D):</strong>
+                    <span id="displayPxPerMM" class="value">--</span> px/mm
+                </div>
+
+                <div class="status-row">
+                    <strong>Field of View (FOV):</strong>
+                    <span id="displayFOVReal" class="value">--</span> mm
+                </div>
+
+                <div class="status-row">
+                    <strong>Optical Distance (d<sub>opt</sub>):</strong>
+                    <span id="displayDOptical" class="value">--</span> mm
+                </div>
+
+                <div class="status-row">
+                    <strong>Angle of View (AOV):</strong>
+                    <span id="displayAOV" class="value">--</span> degrees
+                </div>
+
+                <div class="status-row">
+                    <strong>Effective Focal Length (EFL):</strong>
+                    <span id="displayEFL" class="value">--</span> mm
+                </div>
+
+                <div class="status-row">
+                    <strong>Crop Factor:</strong>
+                    <span id="displayCropFactor" class="value">--</span>
+                </div>
+
+                <div class="status-row">
+                    <strong>Equivalent Focal Length (35mm):</strong>
+                    <span id="displayEqFL35" class="value">--</span> mm
+                </div>
+                <div style="text-align: center; margin-top: 2em">
+                    <button id="calculateTPSBtn">Run TPS Calculation</button>
+                </div>
+            </section>
+            <section class="asciiSplash">
+                <pre>
+╔══════════════════════════════════════════════════════╗
+║         LIMNMEDIA.T.P.S : L.E.N.S.MAP SYSTEM         ║
+║ ──────────────────────────────────────────────────── ║
+║   Three Point System | Effective Scale Calibration   ║
+║   Stop-Motion • Miniatures • VFX • Camera Matching   ║
+╚══════════════════════════════════════════════════════╝
+                    </pre
+                >
+            </section>
+            <section id="tpsMathExplanation" class="card">
+                <h2>📐 TPS Geometry: From Points to Focal Length</h2>
+
+                <div class="status-row">
+                    <strong>Step 1 — Pixels per Millimeter (px/mm):</strong>
+                    <div class="latex-block">$$ \text{px/mm} = \frac{P_{\text{image}}}{D_{\text{real}}} $$</div>
+                    <p>
+                        Given a known physical distance <code>D<sub>real</sub></code> between two points and their
+                        measured pixel distance <code>P<sub>image</sub></code
+                        >, we calculate the image scale. This defines the relationship between screen space and
+                        real-world scale.
+                    </p>
+                </div>
+
+                <div class="status-row">
+                    <strong>Step 2 — Real-World Field of View:</strong>
+                    <div class="latex-block">$$ FOV_{\text{real}} = \frac{W_{\text{image}}}{\text{px/mm}} $$</div>
+                    <p>
+                        Using image width in pixels and scale, we find how much physical width the image spans in the
+                        real world.
+                    </p>
+                </div>
+
+                <div class="status-row">
+                    <strong>Step 3 — Angle of View (AOV):</strong>
+                    <div class="latex-block">
+                        $$ \theta = 2 \cdot \tan^{-1}\left(\frac{FOV_{\text{real}}}{2 \cdot d_{\text{optical}}}\right)
+                        $$
+                    </div>
+                    <p>
+                        The optical distance <code>d<sub>optical</sub></code> (focus distance minus entrance pupil
+                        offset) determines the triangle of view. This is the same principle used in lens datasheets and
+                        3D camera matching.
+                    </p>
+                </div>
+
+                <div class="status-row">
+                    <strong>Step 4 — Effective Focal Length:</strong>
+                    <div class="latex-block">
+                        $$ f = \frac{W_{\text{sensor}}}{2 \cdot \tan\left(\frac{\theta}{2}\right)} $$
+                    </div>
+                    <p>
+                        This equation gives the effective focal length of the lens using the known sensor width and
+                        calculated AOV.
+                    </p>
+                </div>
+
+                <div class="status-row">
+                    <strong>Optional — Crop Factor & Equivalent Focal Length:</strong>
+                    <div class="latex-block">
+                        $$ \text{EqFL}_{35mm} = f \cdot \left(\frac{36}{W_{\text{sensor}}}\right) $$
+                    </div>
+                    <p>
+                        This transforms your lens into its 35mm equivalent — great for comparing digital camera systems.
+                    </p>
+                </div>
+                <div class="latex-block">
+                    \[ f = \frac{W_{\text{sensor}}}{2 \cdot \tan \left( \tan^{-1} \left( \frac{W_{\text{image}} \cdot
+                    D_{\text{real}}}{2 \cdot P_{\text{image}} \cdot (d_{\text{sensor}} - \Delta)} \right) \right)} \]
+                </div>
+                <hr />
+
+                <p class="note">
+                    🔍 This is the same math used in OpenCV calibration, matchmoving software, and VFX camera
+                    simulators. It’s geometry. It’s trigonometry. It’s rock-solid.
+                </p>
+            </section>
+
+            <!-- Picker Overlay -->
+            <div id="pickerOverlay" class="fullscreenOverlay">
+                <div id="pickerButtonBar">
+                    <button id="selectBtn">✅ Select & Close</button>
+                </div>
+                <div id="pickCrosshair" class="crosshair"></div>
+                <canvas id="pickCanvas"></canvas>
+            </div>
+
+            <!-- Verifier Overlay -->
+            <div id="verifyOverlay" class="fullscreenOverlay">
+                <div id="verifyButtonBar">
+                    <button id="confirmBtn">✅ Confirm</button>
+                    <button id="selectNewBtn">📍 Select New</button>
+                </div>
+                <div id="verifyCrosshair" class="crosshair"></div>
+                <canvas id="verifyCanvas"></canvas>
+            </div>
+            <div></div>
+            <footer id="appFooter">
+                <div class="footer-content">
+                    <p>
+                        © 2025 LIMNMEDIA — TPS LENSMap is an open technical tool. Use permitted under license.
+                        Modifications or redistribution must be approved.
+                    </p>
+                    <p>
+                        <a href="https://github.com/yourusername/your-repo-name" target="_blank">View on GitHub</a>
+                    </p>
+                </div>
+            </footer>
+        </div>
+
+        <script>
+            console.log("[00]  HTML is working before script blocks load");
+        </script>
+
+        <script type="module" src="./main.js"></script>
+        <script>
+            window.addEventListener("load", () => {
+                window.scrollTo(0, 0);
+            });
+        </script>
+    </body>
+</html>
