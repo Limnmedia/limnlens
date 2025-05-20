@@ -51,7 +51,9 @@
     </head>
     <body>
         <header class="limn-header" role="banner" aria-label="LIMNMEDIA branding">
-            <a href="https://www.limnmedia.com"><img id="logo" src="img/logo.png" alt="LIMNMEDIA logo with stylized graphic" /></a>
+            <a href="https://www.limnmedia.com"
+                ><img id="logo" src="img/logo.png" alt="LIMNMEDIA logo with stylized graphic"
+            /></a>
         </header>
         <div id="mainUI">
             <h1>LIMNMEDIA.T.P.S : L.E.N.S.MAP</h1>
@@ -59,7 +61,8 @@
             <h5>LENSMap: Calibration Preview Edition</h5>
             <p>
                 A functional release of the LENSMap tool for hands-on lens calibration, EXIF analysis, and TPS
-                education.<br /> Educational guides and full documentation are in progress.<br />
+                education.<br />
+                Educational guides and full documentation are in progress.<br />
             </p>
             <section id="tps-lensmap-intro" class="intro-box">
                 <p>1. Gather camera data<br />2. Capture measurements<br />3. Calibrate!</p>
@@ -67,7 +70,12 @@
                     Calculate Effective Focal Length (EFL)<br />Measure Nodal Point.<br />
                     EFL gives scale + FOV. Nodal point gives origin.
                 </p>
-                <p>Questions, comments and help?<br />Join the discussion on <a href="httpshttps://discord.gg/XaBNHXw8BT" target="_blank" rel="noopener noreferrer">our Discord server</a>.</p>
+                <p>
+                    Questions, comments and help?<br />Join the discussion on
+                    <a href="httpshttps://discord.gg/XaBNHXw8BT" target="_blank" rel="noopener noreferrer"
+                        >our Discord server</a
+                    >.
+                </p>
             </section>
 
             <section id="howTo" class="card">
@@ -660,6 +668,7 @@
                     <div class="thumbRow">
                         <div class="thumbInfo">
                             <h2 id="pointPickerH2">Point Picker</h2>
+                            <p>1.) Pick & verify two points in your image.</p>
                             <div id="thumbnailLabel">No image loaded</div>
                         </div>
                         <div id="thumbnailWrapper">
@@ -717,6 +726,7 @@
 
                     <div style="text-align: center">
                         <h2>Manual Data</h2>
+                        <p>2.) FIll in all the data and measurements.</p>
                     </div>
                     <div class="form-field">
                         <h5>Find the actual size of the camera sensor in millimeters.</h5>
@@ -748,11 +758,13 @@
 
                         <input type="number" id="entrancePupilOffset" placeholder="e.g. 35.2" />
                     </div>
-                    <button id="saveInputBtn">Save Manual Data</button>
+                    <p>3.) Send all the data to the calculator.</p>
+                    <button id="saveInputBtn">Send to Calculator</button>
                 </div>
             </section>
             <section id="manualDataDisplay" class="card">
-                <h2>Data Overview</h2>
+                <h2>Data Received</h2>
+                <p>4.) Verify data for the calculation.</p>
 
                 <div class="status-row">
                     <strong>Sensor Width (mm):</strong> <span id="displaySensorWidth" class="value">-- </span> mm
@@ -781,7 +793,9 @@
             <br />
             <section id="focalLengthOverview" class="card">
                 <h2>Focal Length Calculation (TPS)</h2>
-
+                <div style="text-align: center; margin-top: 2em">
+                    <button id="calculateTPSBtn">Run TPS Calculation</button>
+                </div>
                 <div class="status-row">
                     <strong>Pixel Distance (P):</strong>
                     <span id="displayPImage" class="value">--</span> px
@@ -847,9 +861,6 @@
                 <div class="status-row">
                     <strong>Equivalent Focal Length (35mm):</strong>
                     <span id="displayEqFL35" class="value">--</span> mm
-                </div>
-                <div style="text-align: center; margin-top: 2em">
-                    <button id="calculateTPSBtn">Run TPS Calculation</button>
                 </div>
             </section>
             <section class="asciiSplash">
