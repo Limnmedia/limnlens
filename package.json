@@ -1,0 +1,8 @@
+{
+  "name": "limnlens",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/math-tests.mjs"
+  }
+}

@@ -1,1 +1,5 @@
-Please open an issue before submitting changes. No modifications may be redistributed without written approval from LIMNMEDIA.
+# Contributing
+
+Please open an issue before submitting changes.
+
+This project is source-available for educational, creative, and research review. Modified public releases, forks, or redistributions require written approval from LIMNMEDIA.
