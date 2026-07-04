@@ -2,4 +2,6 @@
 
 Please open an issue before submitting changes.
 
-This project is source-available for educational, creative, and research review. Modified public releases, forks, or redistributions require written approval from LIMNMEDIA.
+This project is licensed under `AGPL-3.0-or-later`.
+
+Project changes should be reviewed and approved by Cade before merge.

@@ -22,11 +22,15 @@ Use this checklist before publishing or after changes to picker, verifier, input
   - Baseline distance: `100`
   - Focus distance: `1000`
   - Entrance pupil offset: `0`
-- Click Send to Calculator.
-- Confirm Run TPS Calculation becomes enabled.
+- Click Review inputs.
+- Confirm Calculate focal length becomes enabled.
 - Run the calculation.
 - Confirm the status reads `Focal length calculated`.
 - Confirm EFL, crop factor, AOV, FOV, and 35mm equivalent fields update.
+- Confirm Save calculation file becomes enabled.
+- Click Save calculation file.
+- Confirm a `limnlens-*.json` file downloads and the status names the saved file.
+- Change one measurement input and confirm Save calculation file becomes disabled until recalculating.
 - Confirm there are no uncaught console errors.
 
 ## Validation Cases

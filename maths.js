@@ -20,7 +20,7 @@ export function updateDistance() {
   return null;
 }
 
-export function calculateTPSFromInputs({ P, D, Wimg, Wsensor, d_sensor, delta = 0 }) {
+export function calculateTPSFromInputs({ P, D, Wimg, Wsensor, Hsensor = null, d_sensor, delta = 0 }) {
   if (!(P > 0 && D > 0 && Wimg > 0 && Wsensor > 0 && d_sensor > 0)) {
     return null;
   }
@@ -40,18 +40,24 @@ export function calculateTPSFromInputs({ P, D, Wimg, Wsensor, d_sensor, delta = 
   const EFL = Wsensor / (2 * Math.tan(AOV / 2));
   const Crop = 36 / Wsensor;
   const EqFL = EFL * Crop;
+  const sensorHeight = Number(Hsensor);
+  const normalizedSensorHeight = Number.isFinite(sensorHeight) && sensorHeight > 0 ? sensorHeight : null;
+  const verticalAOV =
+    normalizedSensorHeight !== null ? 2 * Math.atan(normalizedSensorHeight / (2 * EFL)) : null;
 
   return {
     P,
     D,
     Wimg,
     Wsensor,
+    Hsensor: normalizedSensorHeight,
     d_sensor,
     delta,
     pxmm,
     FOV,
     d_optical: d_opt,
     AOV_deg: AOV * 180 / Math.PI,
+    verticalAOV_deg: verticalAOV !== null ? verticalAOV * 180 / Math.PI : null,
     EFL,
     CropFactor: Crop,
     EqFL_35mm: EqFL
@@ -66,6 +72,7 @@ export function calculateTPS() {
     D: state.baselineDistanceMM,
     Wimg: state.imageWidthPixels,
     Wsensor: state.sensorWidthMM,
+    Hsensor: state.sensorHeightMM,
     d_sensor: state.focusDistanceMM,
     delta: state.entrancePupilOffsetMM || 0
   });
@@ -79,6 +86,8 @@ export function calculateTPS() {
   state.mmPerPixel = 1 / result.pxmm;
   state.effectiveFocalLength = result.EFL;
   state.magnification = result.D / result.d_sensor;
+  state.verticalAOV_deg = result.verticalAOV_deg;
+  state.lastTPSResult = result;
 
   console.log("TPS Calculated:");
   console.table(result);

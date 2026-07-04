@@ -73,9 +73,7 @@ Acceptance checks:
 Goal: make the project publishable and understandable.
 
 - Fix mojibake/encoding artifacts in README, logs, labels, and comments.
-- Decide the actual license model.
-  - If MIT, add a real `LICENSE` file and remove approval-only redistribution language.
-  - If approval-only, remove the "MIT License" claim from `README.md`.
+- Publish the project under `AGPL-3.0-or-later` and remove approval-only redistribution language.
 - Update README to reflect actual dependency behavior.
   - The app has no build dependencies.
   - KaTeX currently loads from a CDN.

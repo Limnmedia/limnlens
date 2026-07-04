@@ -1,4 +1,4 @@
-# TPS LENSMap
+# LIMNLENS
 
 **Three Point System: LIMN Effective Normalized Scale Map**
 
@@ -6,7 +6,7 @@ A stop-motion-friendly calibration tool for lens and camera scale, precision-foc
 
 ## Overview
 
-TPS LENSMap is a browser-based tool for calculating effective focal length (EFL) and related camera-matching metrics from real-world reference points. It is designed for stop-motion artists, cinematographers, and VFX technicians who need accurate camera scale, nodal offset, and field-of-view alignment across multi-pass workflows, miniature shoots, and live-action/CG crossovers.
+LIMNLENS is a browser-based tool for calculating effective focal length (EFL) and related camera-matching metrics from real-world reference points. It is designed for stop-motion artists, cinematographers, and VFX technicians who need accurate camera scale, nodal offset, and field-of-view alignment across multi-pass workflows, miniature shoots, and live-action/CG crossovers.
 
 The app has no build step and no package-managed runtime dependencies. It does currently load KaTeX from a CDN for equation rendering, so a network connection is needed for the formatted math display unless KaTeX is vendored locally.
 
@@ -16,6 +16,7 @@ The app has no build step and no package-managed runtime dependencies. It does c
 - Interactive two-point picker and verifier for baseline precision
 - Manual entry for sensor size, physical baseline distance, focus distance, and entrance pupil offset
 - Calculation of pixel density, field of view, angle of view, EFL, crop factor, and 35mm equivalent focal length
+- JSON export for saving a completed calculation profile
 - Educational geometry notes and equation rendering
 - Calibration target assets for chart-based workflows
 
@@ -65,10 +66,11 @@ Manual browser checks are listed in [QA_CHECKLIST.md](QA_CHECKLIST.md).
    - focus distance in millimeters
    - optional entrance pupil offset in millimeters
 5. Run the TPS calculation and review the derived camera metrics.
+6. Use "Save calculation file" to download a JSON profile for the completed calculation.
 
 ## Underlying Math
 
-LENSMap derives image scale from a known real-world distance and its measured pixel distance:
+LIMNLENS derives image scale from a known real-world distance and its measured pixel distance:
 
 ```text
 px_per_mm = P_image / D_real
@@ -95,13 +97,11 @@ Where:
 
 ## License and Usage
 
-This project is intended for educational, creative, and research use.
-
-Modifications, forks, public releases, and redistributions require written approval from LIMNMEDIA. See [LICENSE.md](LICENSE.md) for details.
+This project is licensed under the GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`). See [LICENSE.md](LICENSE.md) for details.
 
 ## Contributing
 
-Please open an issue before submitting changes. Public redistribution of modified versions requires written approval from LIMNMEDIA.
+Please open an issue before submitting changes. Project changes should be reviewed and approved by Cade before merge.
 
 ## Links
 

@@ -4,11 +4,12 @@ console.log("[07] main.js loaded");
 
 import { state } from "./state.js";
 import { loadImage, resetImageState, renderThumbnail } from "./imageLoader.js";
-import { updateDistance, calculateTPS } from "./maths.js";
+import { updateDistance, calculateTPS } from "./maths.js?v=20260704-refactor";
 import { startPicker, selectPickedPoint } from "./picker.js";
 import { startVerifier, selectNewPoint } from "./verifier.js";
 import { animateVerify, setupDragging } from "./canvas.js";
-import { renderManualDisplay, renderPixelDistance, renderStatus, renderTPSResult, updateStatusUI } from "./ui.js";
+import { renderManualDisplay, renderPixelDistance, renderStatus, renderTPSResult, updateStatusUI } from "./ui.js?v=20260704-refactor";
+import { buildCalculationProfile, downloadCalculationProfile } from "./exportProfile.js?v=20260704-save";
 
 const dom = {
   fileInput: document.getElementById("fileInput"),
@@ -41,7 +42,8 @@ const dom = {
   focusDistance: document.getElementById("focusDistance"),
   entrancePupilOffset: document.getElementById("entrancePupilOffset"),
   saveInputBtn: document.getElementById("saveInputBtn"),
-  calculateTPSBtn: document.getElementById("calculateTPSBtn")
+  calculateTPSBtn: document.getElementById("calculateTPSBtn"),
+  saveCalculationBtn: document.getElementById("saveCalculationBtn")
 };
 
 function setImageLoadedUI() {
@@ -51,6 +53,13 @@ function setImageLoadedUI() {
   const cx = Math.round(state.imageWidthPixels / 2);
   const cy = Math.round(state.imageHeightPixels / 2);
   dom.imageCenterLabel.textContent = `${cx}, ${cy}`;
+}
+
+function invalidateCalculation() {
+  state.lastTPSResult = null;
+  if (dom.saveCalculationBtn) {
+    dom.saveCalculationBtn.disabled = true;
+  }
 }
 
 function validateNumberInput(el, { required, min }) {
@@ -89,6 +98,7 @@ function getReadinessIssue() {
 function updateCalculationReadiness(showMessage = false) {
   const issue = getReadinessIssue();
   dom.calculateTPSBtn.disabled = Boolean(issue);
+  dom.saveCalculationBtn.disabled = !state.lastTPSResult;
 
   if (showMessage || !issue) {
     renderStatus(issue || "Ready to calculate", Boolean(issue));
@@ -97,11 +107,35 @@ function updateCalculationReadiness(showMessage = false) {
   return !issue;
 }
 
+function saveMeasurementState({ markFields = true } = {}) {
+  const width = validateNumberInput(dom.sensorWidth, { required: true, min: 0.000001 });
+  const height = validateNumberInput(dom.sensorHeight, { required: false, min: 0.000001 });
+  const baseline = validateNumberInput(dom.baselineDistance, { required: true, min: 0.000001 });
+  const focus = validateNumberInput(dom.focusDistance, { required: true, min: 0.000001 });
+  const entrancePupilOffset = validateNumberInput(dom.entrancePupilOffset, { required: false, min: 0 });
+
+  state.sensorWidthMM = width;
+  state.sensorHeightMM = height;
+  state.baselineDistanceMM = baseline;
+  state.focusDistanceMM = focus;
+  state.entrancePupilOffsetMM = entrancePupilOffset;
+
+  if (!markFields) {
+    [dom.sensorWidth, dom.sensorHeight, dom.baselineDistance, dom.focusDistance, dom.entrancePupilOffset].forEach((el) =>
+      el.classList.remove("valid", "missing")
+    );
+  }
+
+  renderManualDisplay();
+  updateCalculationReadiness(markFields);
+}
+
 function initApp() {
   resetImageState();
   console.log("[BOOT] Initializing app...");
 
   function refreshDistanceDisplay() {
+    invalidateCalculation();
     const distance = updateDistance();
     if (distance !== null) {
       renderPixelDistance(dom.pixelDistanceLabel);
@@ -110,11 +144,14 @@ function initApp() {
     }
   }
 
+  saveMeasurementState({ markFields: false });
+
   dom.loadImageBtn.addEventListener("click", () => dom.fileInput.click());
 
   dom.loadTestImageBtn.addEventListener("click", () => {
     const img = new Image();
     img.onload = () => {
+      invalidateCalculation();
       state.img = img;
       state.imageWidthPixels = img.naturalWidth;
       state.imageHeightPixels = img.naturalHeight;
@@ -135,6 +172,7 @@ function initApp() {
 
     setTimeout(() => {
       if (state.img) {
+        invalidateCalculation();
         setImageLoadedUI();
         renderManualDisplay();
         updateCalculationReadiness();
@@ -203,40 +241,41 @@ function initApp() {
     )
   );
 
-  dom.saveInputBtn.addEventListener("click", () => {
-    const width = validateNumberInput(dom.sensorWidth, { required: true, min: 0.000001 });
-    const height = validateNumberInput(dom.sensorHeight, { required: false, min: 0.000001 });
-    const baseline = validateNumberInput(dom.baselineDistance, { required: true, min: 0.000001 });
-    const focus = validateNumberInput(dom.focusDistance, { required: true, min: 0.000001 });
-    const entrancePupilOffset = validateNumberInput(dom.entrancePupilOffset, { required: false, min: 0 });
-
-    if (width !== null) state.sensorWidthMM = width;
-    if (height !== null) state.sensorHeightMM = height;
-    if (baseline !== null) state.baselineDistanceMM = baseline;
-    if (focus !== null) state.focusDistanceMM = focus;
-    if (entrancePupilOffset !== null) state.entrancePupilOffsetMM = entrancePupilOffset;
-
-    console.log("[manual] Manual data saved to state:", {
-      sensorWidthMM: state.sensorWidthMM,
-      sensorHeightMM: state.sensorHeightMM,
-      baselineDistanceMM: state.baselineDistanceMM,
-      focusDistanceMM: state.focusDistanceMM,
-      entrancePupilOffsetMM: state.entrancePupilOffsetMM
+  [dom.sensorWidth, dom.sensorHeight, dom.baselineDistance, dom.focusDistance, dom.entrancePupilOffset].forEach((input) => {
+    input.addEventListener("input", () => {
+      invalidateCalculation();
+      saveMeasurementState({ markFields: true });
     });
+  });
 
-    renderManualDisplay();
-    updateCalculationReadiness(true);
+  dom.saveInputBtn.addEventListener("click", () => {
+    saveMeasurementState({ markFields: true });
+    const reviewPanel = document.getElementById("manualDataDisplay");
+    if (reviewPanel) reviewPanel.open = true;
   });
 
   dom.calculateTPSBtn.addEventListener("click", () => {
+    saveMeasurementState({ markFields: true });
     if (!updateCalculationReadiness(true)) return;
 
     const result = calculateTPS();
     if (result) {
       renderTPSResult(result);
+      dom.saveCalculationBtn.disabled = false;
       console.log("[calc] Focal length calculated successfully");
     } else {
       updateCalculationReadiness(true);
+    }
+  });
+
+  dom.saveCalculationBtn.addEventListener("click", () => {
+    const profile = buildCalculationProfile();
+    const filename = downloadCalculationProfile(profile);
+
+    if (filename) {
+      renderStatus(`Saved calculation file: ${filename}`);
+    } else {
+      renderStatus("Calculate focal length before saving a file.", true);
     }
   });
 

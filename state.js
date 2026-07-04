@@ -82,6 +82,7 @@ export const state = {
   mmPerPixel: null,
   effectiveFocalLength: null,
   magnification: null,
+  lastTPSResult: null,
 
   // 🎯 Calibration Target Metadata
   calibrationTarget: {
@@ -91,7 +92,7 @@ export const state = {
     notes: ""
   },
 
-  // 🔭 LENSMap Profile (10-stop sparse map of EFL vs. Focus Distance)
+  // LIMNLENS profile data (10-stop sparse map of EFL vs. focus distance)
   lensMap: {
     stops: [
       // {

@@ -84,6 +84,14 @@ export function renderManualDisplay() {
 export function renderTPSResult(result) {
   if (!result) return;
 
+  const sensorHeight = Number(state.sensorHeightMM);
+  const verticalAOV =
+    Number.isFinite(result.verticalAOV_deg)
+      ? result.verticalAOV_deg
+      : Number.isFinite(sensorHeight) && sensorHeight > 0 && result.EFL > 0
+        ? 2 * Math.atan(sensorHeight / (2 * result.EFL)) * 180 / Math.PI
+        : null;
+
   setText("displayPImage", result.P.toFixed(2));
   setText("displayDReal", result.D.toFixed(2));
   setText("displayWImage", result.Wimg);
@@ -95,6 +103,7 @@ export function renderTPSResult(result) {
   setText("displayFOVReal", result.FOV.toFixed(2));
   setText("displayDOptical", result.d_optical.toFixed(2));
   setText("displayAOV", result.AOV_deg.toFixed(2));
+  setText("displayVerticalAOV", verticalAOV !== null ? verticalAOV.toFixed(2) : "--");
   setText("displayEFL", result.EFL.toFixed(2));
   setText("displayCropFactor", result.CropFactor.toFixed(2));
   setText("displayEqFL35", result.EqFL_35mm.toFixed(2));
