@@ -113,9 +113,9 @@ summary {
 
 #mainUI {
   margin: 0 auto;
-  max-width: 1180px;
+  max-width: 1440px;
   padding: 10px 10px 32px;
-  width: 100%;
+  width: min(100%, 1440px);
 }
 
 h1,
@@ -185,6 +185,12 @@ h4 {
   gap: 10px;
   min-width: 0;
   width: 100%;
+}
+
+.image-panel,
+.controls-panel {
+  max-width: 100%;
+  min-width: 0;
 }
 
 .tool-panel,
@@ -714,10 +720,12 @@ canvas {
   .quick-help {
     margin-bottom: 12px;
   }
+}
 
+@media (min-width: 860px) {
   .calculator-grid {
     gap: 14px;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
   }
 
   .controls-stack {
@@ -733,7 +741,7 @@ canvas {
 
 @media (min-width: 1040px) {
   .calculator-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(340px, 400px);
+    grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
   }
 
   .primary-result strong {
