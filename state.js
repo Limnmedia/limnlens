@@ -83,6 +83,7 @@ export const state = {
   effectiveFocalLength: null,
   magnification: null,
   lastTPSResult: null,
+  lastConfidenceReport: null,
 
   // 🎯 Calibration Target Metadata
   calibrationTarget: {

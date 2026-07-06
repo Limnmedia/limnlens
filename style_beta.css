@@ -308,6 +308,7 @@ button:disabled {
 
 .point-summary,
 .secondary-results,
+.confidence-panel,
 #manualDataDisplay {
   border-top: 1px solid var(--line);
   margin-top: 16px;
@@ -436,6 +437,58 @@ button:disabled {
   color: var(--ink);
   font-size: 1rem;
   font-weight: 700;
+}
+
+.confidence-panel {
+  background: #fbfcfe;
+  border-radius: var(--radius);
+}
+
+.compact-heading {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.compact-heading h4 {
+  margin-bottom: 0;
+}
+
+.compact-heading p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.confidence-warnings {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.confidence-warning,
+.confidence-warnings li {
+  background: #eef4fb;
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+
+.confidence-warning.good {
+  background: #f3fbf6;
+  border-left-color: var(--good);
+}
+
+.confidence-warning.caution {
+  background: #fff8dd;
+  border-left-color: var(--brand-dark);
+}
+
+.confidence-warning.warning {
+  background: #fff5f4;
+  border-left-color: var(--bad);
 }
 
 .guide-shell {

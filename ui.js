@@ -109,3 +109,50 @@ export function renderTPSResult(result) {
   setText("displayEqFL35", result.EqFL_35mm.toFixed(2));
   renderStatus("Focal length calculated");
 }
+
+export function renderConfidenceReport(report) {
+  const warningsEl = document.getElementById("confidenceWarnings");
+
+  if (!report) {
+    setText("displayConfidenceLevel", "--");
+    setText("displayConfidenceSummary", "Calculate focal length to see confidence feedback.");
+    setText("displayConfidenceBaseline", "--");
+    setText("displayPointSeparationPercent", "--");
+    setText("displayCenterDistanceA", "--");
+    setText("displayCenterDistanceB", "--");
+    setText("displayEdgeMargin", "--");
+    setText("displayEflShiftPerPixel", "--");
+    setText("displayEflShiftPerBaselineMM", "--");
+
+    if (warningsEl) {
+      warningsEl.innerHTML = "<li>Warnings and cautions will appear here after calculation.</li>";
+    }
+    return;
+  }
+
+  const metrics = report.metrics;
+  setText("displayConfidenceLevel", report.level);
+  setText("displayConfidenceSummary", report.summary);
+  setText("displayConfidenceBaseline", `${metrics.baselinePixels} px / ${metrics.baselineDistanceMM} mm`);
+  setText("displayPointSeparationPercent", `${metrics.pointSeparationPercentOfImageWidth}%`);
+  setText("displayCenterDistanceA", `${metrics.pointAFromCenter.percentOfHalfDiagonal}%`);
+  setText("displayCenterDistanceB", `${metrics.pointBFromCenter.percentOfHalfDiagonal}%`);
+  setText("displayEdgeMargin", `${metrics.closestEdgeMarginPercent}%`);
+  setText("displayEflShiftPerPixel", `${metrics.eflShiftPerPixelErrorMM} mm`);
+  setText("displayEflShiftPerBaselineMM", `${metrics.eflShiftPerBaselineMMErrorMM} mm`);
+
+  if (!warningsEl) return;
+
+  const notes = report.warnings.length > 0
+    ? report.warnings
+    : [{ level: "good", message: "No confidence warnings for this two-point calculation." }];
+
+  warningsEl.replaceChildren(
+    ...notes.map((note) => {
+      const item = document.createElement("li");
+      item.className = `confidence-warning ${note.level}`;
+      item.textContent = note.message;
+      return item;
+    })
+  );
+}

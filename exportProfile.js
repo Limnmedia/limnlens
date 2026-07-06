@@ -58,7 +58,8 @@ export function buildCalculationProfile() {
       pixelDensityPxPerMM: roundNumber(result.pxmm),
       opticalDistanceMM: roundNumber(result.d_optical),
       mmPerPixel: roundNumber(state.mmPerPixel)
-    }
+    },
+    confidence: state.lastConfidenceReport || null
   };
 }
 

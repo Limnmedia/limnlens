@@ -36,6 +36,7 @@ The app has no build step and no package-managed runtime dependencies. It does c
 - Interactive two-point picker and verifier for baseline precision
 - Manual entry for sensor size, physical baseline distance, focus distance, and entrance pupil offset
 - Calculation of pixel density, field of view, angle of view, EFL, crop factor, and 35mm equivalent focal length
+- Measurement confidence feedback for point spacing, edge placement, and sensitivity to small input errors
 - JSON export for saving a completed calculation profile
 - Educational geometry notes and equation rendering
 - Calibration target assets for chart-based workflows
@@ -164,6 +165,7 @@ The saved `.json` file is a calculation record, not a full editable project file
 - `points`: Point A, Point B, and measured pixel distance
 - `measurements`: real baseline distance, sensor size, focus distance, and entrance pupil offset
 - `results`: effective focal length, 35mm equivalent focal length, angle of view, crop factor, real field of view, pixel density, optical distance, and millimeters per pixel
+- `confidence`: point-placement checks, stability notes, and approximate sensitivity values
 
 Import, multi-sample lens maps, and production-specific exports are planned future additions.
 
@@ -205,7 +207,7 @@ Please open an issue before submitting changes. Project changes should be review
 
 ## Links
 
-- [LIMNMEDIA Website](https://limn.media)
+- [LIMNMEDIA Website](https://limnmedia.com)
 - [Visual Effects Society](https://www.visualeffectssociety.com)
 - [Camera Sensor Sizes - Wikipedia](https://en.wikipedia.org/wiki/Image_sensor_format)
 - [Laser Rangefinder - Wikipedia](https://en.wikipedia.org/wiki/Laser_rangefinder)

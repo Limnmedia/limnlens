@@ -38,11 +38,11 @@
             onload="renderMathInElement(document.body);"
             crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="./style_beta.css?v=20260704-mobile2" />
+        <link rel="stylesheet" href="./style_beta.css?v=20260706-confidence" />
     </head>
     <body>
         <header class="limn-header" role="banner" aria-label="LIMNMEDIA branding">
-            <a href="https://www.limnmedia.com">
+            <a href="https://limnmedia.com">
                 <img id="logo" src="img/logo.png" alt="LIMNMEDIA logo" />
             </a>
         </header>
@@ -235,6 +235,48 @@
                             </div>
                         </div>
 
+                        <div id="confidencePanel" class="confidence-panel" aria-live="polite">
+                            <div class="compact-heading">
+                                <h4>Measurement Confidence</h4>
+                                <p id="displayConfidenceSummary">Calculate focal length to see confidence feedback.</p>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Confidence</span>
+                                <span id="displayConfidenceLevel" class="value">--</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Baseline</span>
+                                <span id="displayConfidenceBaseline" class="value">--</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Point Separation</span>
+                                <span class="value"><span id="displayPointSeparationPercent">--</span> of image width</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Point A From Center</span>
+                                <span class="value"><span id="displayCenterDistanceA">--</span> of half diagonal</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Point B From Center</span>
+                                <span class="value"><span id="displayCenterDistanceB">--</span> of half diagonal</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Closest Edge Margin</span>
+                                <span id="displayEdgeMargin" class="value">--</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Approx. EFL Shift per 1 px Pick Error</span>
+                                <span class="value"><span id="displayEflShiftPerPixel">--</span></span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Approx. EFL Shift per 1 mm Baseline Error</span>
+                                <span class="value"><span id="displayEflShiftPerBaselineMM">--</span></span>
+                            </div>
+                            <ul id="confidenceWarnings" class="confidence-warnings">
+                                <li>Warnings and cautions will appear here after calculation.</li>
+                            </ul>
+                        </div>
+
                         <details id="manualDataDisplay" class="advanced-details">
                             <summary>Review inputs and advanced details</summary>
                             <div class="status-row">
@@ -394,6 +436,6 @@
             </div>
         </footer>
 
-        <script type="module" src="./main.js?v=20260704-save"></script>
+        <script type="module" src="./main.js?v=20260706-confidence"></script>
     </body>
 </html>

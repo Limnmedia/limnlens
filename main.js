@@ -4,12 +4,13 @@ console.log("[07] main.js loaded");
 
 import { state } from "./state.js";
 import { loadImage, resetImageState, renderThumbnail } from "./imageLoader.js";
+import { buildConfidenceReport } from "./confidence.js?v=20260706-confidence";
 import { updateDistance, calculateTPS } from "./maths.js?v=20260704-refactor";
 import { startPicker, selectPickedPoint } from "./picker.js";
 import { startVerifier, selectNewPoint } from "./verifier.js";
 import { animateVerify, setupDragging } from "./canvas.js";
-import { renderManualDisplay, renderPixelDistance, renderStatus, renderTPSResult, updateStatusUI } from "./ui.js?v=20260704-refactor";
-import { buildCalculationProfile, downloadCalculationProfile } from "./exportProfile.js?v=20260704-save";
+import { renderConfidenceReport, renderManualDisplay, renderPixelDistance, renderStatus, renderTPSResult, updateStatusUI } from "./ui.js?v=20260706-confidence";
+import { buildCalculationProfile, downloadCalculationProfile } from "./exportProfile.js?v=20260706-confidence";
 
 const dom = {
   fileInput: document.getElementById("fileInput"),
@@ -57,6 +58,8 @@ function setImageLoadedUI() {
 
 function invalidateCalculation() {
   state.lastTPSResult = null;
+  state.lastConfidenceReport = null;
+  renderConfidenceReport(null);
   if (dom.saveCalculationBtn) {
     dom.saveCalculationBtn.disabled = true;
   }
@@ -260,7 +263,21 @@ function initApp() {
 
     const result = calculateTPS();
     if (result) {
+      const confidence = buildConfidenceReport({
+        result,
+        imageWidthPixels: state.imageWidthPixels,
+        imageHeightPixels: state.imageHeightPixels,
+        point1: state.point1,
+        point2: state.point2,
+        baselineDistanceMM: state.baselineDistanceMM,
+        focusDistanceMM: state.focusDistanceMM,
+        entrancePupilOffsetMM: state.entrancePupilOffsetMM,
+        sensorWidthMM: state.sensorWidthMM
+      });
+
+      state.lastConfidenceReport = confidence;
       renderTPSResult(result);
+      renderConfidenceReport(confidence);
       dom.saveCalculationBtn.disabled = false;
       console.log("[calc] Focal length calculated successfully");
     } else {

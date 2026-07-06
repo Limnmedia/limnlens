@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { buildConfidenceReport } from '../confidence.js';
 import { calculateTPSFromInputs } from '../maths.js';
 import { buildCalculationProfile } from '../exportProfile.js';
 import { state } from '../state.js';
@@ -99,15 +100,41 @@ for (const testCase of invalidCases) {
   assert.equal(calculateTPSFromInputs(testCase.input), null, `${testCase.name} should be rejected`);
 }
 
-const profileResult = calculateTPSFromInputs(cases[0].input);
+const profileInput = {
+  P: 1400,
+  D: 100,
+  Wimg: 5000,
+  Wsensor: 36,
+  Hsensor: 24,
+  d_sensor: 1000,
+  delta: 0
+};
+const profileResult = calculateTPSFromInputs(profileInput);
+const profileConfidence = buildConfidenceReport({
+  result: profileResult,
+  imageWidthPixels: 5000,
+  imageHeightPixels: 3570,
+  point1: { x: 1800, y: 1785 },
+  point2: { x: 3200, y: 1785 },
+  baselineDistanceMM: 100,
+  focusDistanceMM: 1000,
+  entrancePupilOffsetMM: 0,
+  sensorWidthMM: 36
+});
+
+assert.equal(profileConfidence.level, 'Strong');
+assert.equal(profileConfidence.metrics.pointSeparationPercentOfImageWidth, 28);
+assert.equal(profileConfidence.warnings.length, 0);
+
 state.lastTPSResult = profileResult;
+state.lastConfidenceReport = profileConfidence;
 state.tpsVersion = '1.0';
 state.sourceImageFilename = 'test_image.jpg';
 state.imageWidthPixels = 5000;
 state.imageHeightPixels = 3570;
-state.point1 = { x: 2500, y: 1785 };
-state.point2 = { x: 2600, y: 1785 };
-state.baselinePixelDistance = 100;
+state.point1 = { x: 1800, y: 1785 };
+state.point2 = { x: 3200, y: 1785 };
+state.baselinePixelDistance = 1400;
 state.baselineDistanceMM = 100;
 state.sensorWidthMM = 36;
 state.sensorHeightMM = 24;
@@ -119,9 +146,10 @@ const profile = buildCalculationProfile();
 assert.equal(profile.app.name, 'LIMNLENS');
 assert.equal(profile.app.license, 'AGPL-3.0-or-later');
 assert.equal(profile.image.filename, 'test_image.jpg');
-assert.equal(profile.points.pixelDistance, 100);
+assert.equal(profile.points.pixelDistance, 1400);
 assert.equal(profile.measurements.sensorHeightMM, 24);
-assert.equal(profile.results.effectiveFocalLengthMM, 7.2);
-assert.equal(profile.results.verticalAngleOfViewDeg, 118.072487);
+assert.equal(profile.results.effectiveFocalLengthMM, 100.8);
+assert.equal(profile.results.verticalAngleOfViewDeg, 13.577949);
+assert.equal(profile.confidence.level, 'Strong');
 
-console.log(`math-tests: ${cases.length + invalidCases.length + 1} cases passed`);
+console.log(`math-tests: ${cases.length + invalidCases.length + 2} cases passed`);
