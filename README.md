@@ -1,12 +1,32 @@
 # LIMNLENS
 
-**Three Point System: LIMN Effective Normalized Scale Map**
+**Measure two points. Match the camera. Keep animating.**
 
-A stop-motion-friendly calibration tool for lens and camera scale, precision-focused for VFX integration, miniature photography, and CG compositing.
+LIMNLENS is a camera-matching helper for stop-motion, miniature photography, and VFX work.
+
+It helps answer a simple question:
+
+**How big is the real world inside this image?**
+
+You choose two points in a photo, measure how far apart those points are in real life, and LIMNLENS uses that to calculate useful camera-scale information.
+
+This can help when you need to:
+
+- match a real camera to a CG camera
+- line up a miniature set with digital elements
+- compare different passes of the same shot
+- rebuild a camera view after something changes
+- understand field of view, scale, and effective focal length
+
+Think of it like a translator:
+
+**Your image speaks in pixels.  
+Your set speaks in millimeters.  
+LIMNLENS helps translate between them.**
 
 ## Overview
 
-LIMNLENS is a browser-based tool for calculating effective focal length (EFL) and related camera-matching metrics from real-world reference points. It is designed for stop-motion artists, cinematographers, and VFX technicians who need accurate camera scale, nodal offset, and field-of-view alignment across multi-pass workflows, miniature shoots, and live-action/CG crossovers.
+LIMNLENS is a browser-based tool for calculating effective focal length (EFL) and related camera-matching metrics from real-world reference points. It is designed for stop-motion artists, cinematographers, and VFX technicians who need camera scale, nodal offset, and field-of-view alignment across multi-pass workflows, miniature shoots, and live-action/CG crossovers.
 
 The app has no build step and no package-managed runtime dependencies. It does currently load KaTeX from a CDN for equation rendering, so a network connection is needed for the formatted math display unless KaTeX is vendored locally.
 
@@ -54,19 +74,86 @@ npm test
 
 Manual browser checks are listed in [QA_CHECKLIST.md](QA_CHECKLIST.md).
 
-## How to Use
+## Quick Start
 
-1. Load an image with the "Load Image" button, or reveal and load the test image.
-2. Pick point 1 and point 2 on two high-contrast features in the image.
-3. Use the verifier to refine each picked point if needed.
-4. Enter real-world measurements:
-   - sensor width in millimeters
-   - optional sensor height in millimeters
-   - physical baseline distance in millimeters
-   - focus distance in millimeters
-   - optional entrance pupil offset in millimeters
-5. Run the TPS calculation and review the derived camera metrics.
-6. Use "Save calculation file" to download a JSON profile for the completed calculation.
+1. Open LIMNLENS in your browser.
+2. Load a photo from your shot.
+3. Pick two clear points in the image.
+4. Measure the real distance between those two points.
+5. Enter the real-world distance in millimeters.
+6. Enter your sensor size and focus distance if you know them.
+7. Run the calculation.
+8. Save the JSON profile for later use.
+
+Tip: A ruler, printed chart, measured set piece, or known model-making part will usually work better than a random object.
+
+## Three Point System, In Simple Words
+
+The Three Point System is a way to make camera matching easier by starting with clear reference points.
+
+LIMNLENS begins with the first important step:
+
+**Measure a known distance in the image.**
+
+You do this by picking two points:
+
+**Point A** and **Point B**
+
+Then you enter the real distance between those points.
+
+LIMNLENS compares:
+
+**the distance in pixels**
+
+to
+
+**the distance in millimeters**
+
+From that comparison, it calculates camera scale, field of view, angle of view, and effective focal length.
+
+## Good Objects To Measure
+
+For the best results, pick two points that are easy to see in the image and easy to measure in real life.
+
+Good choices include:
+
+- marks on a ruler
+- corners of a printed calibration chart
+- corners of a square or rectangle
+- dots on a measuring card
+- known parts of a miniature set
+- common model-making pieces with known dimensions
+
+The farther apart the two points are, the better the measurement usually is. Tiny measurements can work, but small clicking errors matter more.
+
+## Quick Reference: Common LEGO Dimensions
+
+LEGO pieces can be useful as quick measuring objects when nothing else is available.
+
+Common LEGO system dimensions:
+
+| Part / Feature | Dimension |
+|---|---:|
+| 1 stud spacing / pitch | 8.0 mm |
+| 1 brick height | 9.6 mm |
+| 1 plate height | 3.2 mm |
+| 3 plates stacked | 9.6 mm |
+| Stud diameter | about 4.8 mm |
+| Stud height | about 1.8 mm |
+| 1 x 1 brick footprint | 8.0 x 8.0 mm |
+| 1 x 2 brick footprint | 8.0 x 16.0 mm |
+| 2 x 2 brick footprint | 16.0 x 16.0 mm |
+| 2 x 4 brick footprint | 16.0 x 32.0 mm |
+
+Example:
+
+If you click the left and right outside edges of a 2 x 4 brick, the real-world baseline is about **32 mm**.
+
+If you click across four studs from center to center, the baseline is usually:
+
+**3 spaces x 8 mm = 24 mm**
+
+because the distance between centers counts the spaces between studs, not the number of studs.
 
 ## Saved Calculation Profile
 
