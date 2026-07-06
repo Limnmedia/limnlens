@@ -68,6 +68,18 @@ Manual browser checks are listed in [QA_CHECKLIST.md](QA_CHECKLIST.md).
 5. Run the TPS calculation and review the derived camera metrics.
 6. Use "Save calculation file" to download a JSON profile for the completed calculation.
 
+## Saved Calculation Profile
+
+The saved `.json` file is a calculation record, not a full editable project file yet. It includes:
+
+- `app`: LIMNLENS name, version, profile version, license, and creation timestamp
+- `image`: source filename, pixel dimensions, MIME type, size, and last-modified metadata when available
+- `points`: Point A, Point B, and measured pixel distance
+- `measurements`: real baseline distance, sensor size, focus distance, and entrance pupil offset
+- `results`: effective focal length, 35mm equivalent focal length, angle of view, crop factor, real field of view, pixel density, optical distance, and millimeters per pixel
+
+Import, multi-sample lens maps, and production-specific exports are planned future additions.
+
 ## Underlying Math
 
 LIMNLENS derives image scale from a known real-world distance and its measured pixel distance:
@@ -91,7 +103,8 @@ Where:
 ## Known Limitations
 
 - Distortion modeling is represented in state but not yet fitted or applied.
-- YAML/JSON calibration profile export is planned but not implemented.
+- JSON calculation profile export is available; import and multi-sample profile editing are planned.
+- YAML calibration profile export is planned but not implemented.
 - KaTeX is loaded from a CDN.
 - Browser-free math tests cover the TPS calculation fixtures; broader UI automation is not yet present.
 
@@ -112,9 +125,11 @@ Please open an issue before submitting changes. Project changes should be review
 
 ## Coming Soon
 
-- JSON calibration profile export
 - YAML calibration profile export
+- JSON profile import and validation
 - Multiple-point TPS sequences for lens breathing mapping
+- Web-rendered ideal point placement guide
+- Dependency-free formula rendering
 - Community-submitted calibration charts
 - Blender camera rig and USD camera metadata integration
 
