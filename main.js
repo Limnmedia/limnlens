@@ -17,6 +17,7 @@ const dom = {
   loadImageBtn: document.getElementById("loadImageBtn"),
   loadTestImageBtn: document.getElementById("loadTestImageBtn"),
   testToggleBtn: document.getElementById("testToggleBtn"),
+  resetWorkflowBtn: document.getElementById("resetWorkflowBtn"),
 
   pickPoint1Btn: document.getElementById("pickPoint1Btn"),
   pickPoint2Btn: document.getElementById("pickPoint2Btn"),
@@ -63,6 +64,68 @@ function invalidateCalculation() {
   if (dom.saveCalculationBtn) {
     dom.saveCalculationBtn.disabled = true;
   }
+}
+
+function resetResultDisplays() {
+  [
+    "displayEFL",
+    "displayEqFL35",
+    "displayAOV",
+    "displayVerticalAOV",
+    "displayCropFactor",
+    "displayFOVReal",
+    "displayPImage",
+    "displayDReal",
+    "displayWImage",
+    "displayWSensor",
+    "displayDSensor",
+    "displayPxPerMM",
+    "displayDOptical"
+  ].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = "--";
+  });
+}
+
+function resetWorkflow() {
+  resetImageState();
+  state.point1 = null;
+  state.point2 = null;
+  state.currentPoint = null;
+  state.pickingPoint = 1;
+  state.baselinePixelDistance = null;
+  state.baselineDistanceMM = null;
+  state.sensorWidthMM = null;
+  state.sensorHeightMM = null;
+  state.focusDistanceMM = null;
+  state.entrancePupilOffsetMM = 0;
+  state.point1Status = "idle";
+  state.point2Status = "idle";
+  state.point1Picked = false;
+  state.point2Picked = false;
+  state.verificationConfirmed = false;
+
+  [dom.sensorWidth, dom.sensorHeight, dom.baselineDistance, dom.focusDistance].forEach((input) => {
+    if (input) input.value = "";
+  });
+  if (dom.entrancePupilOffset) dom.entrancePupilOffset.value = "0";
+  if (dom.fileInput) dom.fileInput.value = "";
+
+  dom.pickPoint1Btn.disabled = true;
+  dom.pickPoint2Btn.disabled = true;
+  dom.verifyPoint1Btn.disabled = true;
+  dom.verifyPoint2Btn.disabled = true;
+  dom.imageCenterLabel.textContent = "--";
+  dom.pickedPoint1Label.textContent = "--";
+  dom.pickedPoint2Label.textContent = "--";
+  dom.pixelDistanceLabel.textContent = "--";
+
+  renderThumbnail("No image loaded", "./img/img.png");
+  updateStatusUI();
+  invalidateCalculation();
+  resetResultDisplays();
+  saveMeasurementState({ markFields: false });
+  renderStatus("Load an image to begin", true);
 }
 
 function validateNumberInput(el, { required, min }) {
@@ -163,12 +226,14 @@ function initApp() {
       setImageLoadedUI();
       renderThumbnail("test_image.jpg", "./img/test_image.jpg");
       renderManualDisplay();
-      updateCalculationReadiness();
+      updateCalculationReadiness(true);
 
       console.log(`[test] Test image loaded: ${img.naturalWidth}x${img.naturalHeight}`);
     };
     img.src = "./img/test_image.jpg";
   });
+
+  dom.resetWorkflowBtn.addEventListener("click", resetWorkflow);
 
   dom.fileInput.addEventListener("change", (e) => {
     loadImage(e);
@@ -178,7 +243,7 @@ function initApp() {
         invalidateCalculation();
         setImageLoadedUI();
         renderManualDisplay();
-        updateCalculationReadiness();
+        updateCalculationReadiness(true);
         console.log(`[image] Image center: ${dom.imageCenterLabel.textContent}`);
       }
     }, 50);
@@ -299,11 +364,13 @@ function initApp() {
   setupDragging(dom.pickCanvas, true);
   setupDragging(dom.verifyCanvas, false);
 
-  dom.testToggleBtn.addEventListener("click", () => {
-    const isHidden = dom.loadTestImageBtn.classList.contains("hidden");
-    dom.loadTestImageBtn.classList.toggle("hidden");
-    dom.testToggleBtn.textContent = isHidden ? "Hide Test Loader" : "Show Test Loader";
-  });
+  if (dom.testToggleBtn) {
+    dom.testToggleBtn.addEventListener("click", () => {
+      const isHidden = dom.loadTestImageBtn.classList.contains("hidden");
+      dom.loadTestImageBtn.classList.toggle("hidden");
+      dom.testToggleBtn.textContent = isHidden ? "Hide Test Loader" : "Show Test Loader";
+    });
+  }
 
   updateCalculationReadiness(true);
   console.log("[boot] App initialized.");

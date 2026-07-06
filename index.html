@@ -38,63 +38,37 @@
             onload="renderMathInElement(document.body);"
             crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="./style_beta.css?v=20260706-confidence" />
+        <link rel="stylesheet" href="./style_beta.css?v=20260706-access" />
     </head>
     <body>
-        <header class="limn-header" role="banner" aria-label="LIMNMEDIA branding">
-            <a href="https://limnmedia.com">
+        <header class="app-header" role="banner" aria-label="LIMNMEDIA LIMNLENS">
+            <a class="brand-link" href="https://limnmedia.com">
                 <img id="logo" src="img/logo.png" alt="LIMNMEDIA logo" />
             </a>
+            <div class="app-title-block">
+                <p class="app-kicker">LIMNMEDIA</p>
+                <h1 id="pageTitle" class="app-title">LIMNLENS <span>TPS Scale Calculator</span></h1>
+            </div>
         </header>
 
         <main id="mainUI">
-            <section class="hero" aria-labelledby="pageTitle">
-                <p class="eyebrow">LIMNMEDIA LIMNLENS</p>
-                <h1 id="pageTitle">LIMNLENS Calibration Calculator</h1>
-                <p class="hero-subtitle">
-                    Calculate effective focal length from one image, two picked points, and real-world measurements.
-                </p>
-                <ol class="workflow-strip" aria-label="Calibration workflow">
-                    <li>Load Image</li>
-                    <li>Pick Points</li>
-                    <li>Enter Measurements</li>
-                    <li>Calculate</li>
-                    <li>Save Result</li>
+            <details class="quick-help">
+                <summary>Quick directions</summary>
+                <ol>
+                    <li>Load an image or use the test image.</li>
+                    <li>Pick Point A and Point B.</li>
+                    <li>Enter the real baseline distance, sensor width, and focus distance.</li>
+                    <li>Calculate, then save the JSON profile if the result looks right.</li>
                 </ol>
-            </section>
-
-            <section class="need-panel" aria-labelledby="needTitle">
-                <div>
-                    <h2 id="needTitle">What You Need</h2>
-                    <ul class="need-list">
-                        <li>One calibration image</li>
-                        <li>Two visible points in the image</li>
-                        <li>Real-world distance between those points</li>
-                        <li>Sensor width</li>
-                        <li>Focus distance</li>
-                    </ul>
-                </div>
-                <div>
-                    <h3>Optional</h3>
-                    <ul class="need-list">
-                        <li>Sensor height for vertical angle of view</li>
-                        <li>Entrance pupil offset for higher precision</li>
-                    </ul>
-                </div>
-            </section>
+            </details>
 
             <section id="calculator" class="calculator-shell" aria-labelledby="calculatorTitle">
-                <div class="section-heading">
-                    <p class="eyebrow">Fast workflow</p>
-                    <h2 id="calculatorTitle">Calibration Calculator</h2>
-                    <p>Load a calibration image, pick Point A and Point B, enter measurements, then calculate.</p>
-                </div>
+                <h2 id="calculatorTitle" class="sr-only">Calibration Calculator</h2>
 
                 <div class="calculator-grid">
                     <section id="imageThumbnailSection" class="tool-panel" aria-labelledby="pointPickerH2">
                         <div class="panel-heading">
-                            <h3 id="pointPickerH2">1. Image and Points</h3>
-                            <p>Load a calibration image with two visible points you can measure in real life.</p>
+                            <h3 id="pointPickerH2">Image and Points</h3>
                         </div>
 
                         <div class="thumbRow">
@@ -108,16 +82,11 @@
 
                         <div class="thumbControls">
                             <input type="file" id="fileInput" accept="image/*" />
-                            <button id="loadImageBtn">Load Image</button>
-                            <div class="toggleRow">
-                                <button id="testToggleBtn" class="secondary-button">Try Test Image</button>
-                                <button id="loadTestImageBtn" class="secondary-button hidden">Load Test Image</button>
+                            <div class="action-row">
+                                <button id="loadImageBtn">Load Image</button>
+                                <button id="loadTestImageBtn" class="secondary-button">Use Test Image</button>
+                                <button id="resetWorkflowBtn" class="secondary-button" type="button">Reset</button>
                             </div>
-
-                            <p class="helper-text">
-                                Click Point A, then Point B. The pixel distance updates automatically.
-                            </p>
-
                             <div class="pointControl">
                                 <button id="pickPoint1Btn" disabled>Pick Point A</button>
                                 <button id="verifyPoint1Btn" class="secondary-button" disabled>Verify A</button>
@@ -151,10 +120,10 @@
                         </div>
                     </section>
 
+                    <div class="controls-stack">
                     <section id="measurementPanel" class="tool-panel" aria-labelledby="measurementsTitle">
                         <div class="panel-heading">
-                            <h3 id="measurementsTitle">2. Measurements</h3>
-                            <p>Required fields are enough for a basic effective focal length estimate.</p>
+                            <h3 id="measurementsTitle">Measurements</h3>
                         </div>
 
                         <div class="field-group required-fields" aria-label="Required measurements">
@@ -203,8 +172,7 @@
 
                     <section id="focalLengthOverview" class="results-panel" aria-labelledby="resultsTitle">
                         <div class="panel-heading">
-                            <h3 id="resultsTitle">3. Results</h3>
-                            <p>Effective focal length is the primary camera-matching result.</p>
+                            <h3 id="resultsTitle">Results</h3>
                         </div>
 
                         <div class="primary-result">
@@ -341,6 +309,7 @@
                             </div>
                         </details>
                     </section>
+                    </div>
                 </div>
             </section>
 
@@ -436,6 +405,6 @@
             </div>
         </footer>
 
-        <script type="module" src="./main.js?v=20260706-confidence"></script>
+        <script type="module" src="./main.js?v=20260706-access"></script>
     </body>
 </html>
