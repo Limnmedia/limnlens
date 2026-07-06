@@ -4,6 +4,7 @@
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
+    "syntax": "node --check confidence.js && node --check ui.js && node --check maths.js && node --check exportProfile.js && node --check main.js",
     "test": "node tests/math-tests.mjs"
   }
 }

@@ -45,5 +45,6 @@ Use this checklist before publishing or after changes to picker, verifier, input
 
 ## Math Regression
 
+- Run `npm run syntax`.
 - Run `node tests/math-tests.mjs`.
 - Confirm all math fixtures pass.

@@ -73,6 +73,8 @@ You can also run:
 npm test
 ```
 
+If PowerShell blocks `npm.ps1`, run `npm.cmd test` or use the direct Node command above.
+
 Manual browser checks are listed in [QA_CHECKLIST.md](QA_CHECKLIST.md).
 
 ## Quick Start
@@ -91,6 +93,8 @@ Tip: A ruler, printed chart, measured set piece, or known model-making part will
 ## Three Point System, In Simple Words
 
 The Three Point System is a way to make camera matching easier by starting with clear reference points.
+
+LIMNLENS currently implements the first TPS workflow: a two-point measured baseline for camera scale. Future versions will expand this into multi-point lens maps and deeper camera-solving workflows.
 
 LIMNLENS begins with the first important step:
 
