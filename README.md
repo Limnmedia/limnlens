@@ -4,6 +4,8 @@
 
 LIMNLENS is a camera-matching helper for stop-motion, miniature photography, and VFX work.
 
+Current status: `v0.1.0-alpha` preview.
+
 It helps answer a simple question:
 
 **How big is the real world inside this image?**
@@ -64,13 +66,13 @@ No `npm install` or build command is required.
 The math regression tests are plain Node.js ES modules with no dependency install step:
 
 ```powershell
-node tests/math-tests.mjs
+npm test
 ```
 
-You can also run:
+You can also run the test file directly:
 
 ```powershell
-npm test
+node tests/math-tests.mjs
 ```
 
 If PowerShell blocks `npm.ps1`, run `npm.cmd test` or use the direct Node command above.
@@ -195,6 +197,7 @@ Where:
 
 ## Known Limitations
 
+- This is an alpha/preview release.
 - Distortion modeling is represented in state but not yet fitted or applied.
 - JSON calculation profile export is available; import and multi-sample profile editing are planned.
 - YAML calibration profile export is planned but not implemented.

@@ -1,50 +1,38 @@
 # QA Checklist
 
-Use this checklist before publishing or after changes to picker, verifier, input validation, or TPS math.
+## Local run
 
-## Local Setup
-
-- From the repository root, run `python -m http.server 8000`.
+- Start local server with `python -m http.server 8000`.
 - Open `http://127.0.0.1:8000/`.
-- Open the browser console and keep it visible during testing.
+- Confirm the app loads without console errors.
 
-## Happy Path
+## Core workflow
 
 - Load the test image.
-- Pick point 1.
-- Pick point 2.
+- Pick Point A.
+- Pick Point B.
 - Confirm the pixel distance updates.
-- Verify point 1 or point 2.
-- Use Select New in the verifier and confirm the point changes.
-- Enter:
-  - Sensor width: `36`
-  - Sensor height: `24`
-  - Baseline distance: `100`
-  - Focus distance: `1000`
-  - Entrance pupil offset: `0`
-- Click Review inputs.
-- Confirm Calculate focal length becomes enabled.
-- Run the calculation.
-- Confirm the status reads `Focal length calculated`.
-- Confirm EFL, crop factor, AOV, FOV, and 35mm equivalent fields update.
-- Confirm Save calculation file becomes enabled.
-- Click Save calculation file.
-- Confirm a `limnlens-*.json` file downloads and the status names the saved file.
-- Change one measurement input and confirm Save calculation file becomes disabled until recalculating.
-- Confirm there are no uncaught console errors.
+- Enter required measurements.
+- Run TPS calculation.
+- Confirm results populate.
+- Save JSON profile.
+- Confirm exported JSON includes app metadata, image metadata, points, measurements, results, and confidence information.
 
-## Validation Cases
+## Validation
 
-- Leave the image unloaded and confirm calculation stays disabled.
-- Load an image but leave one point unpicked and confirm calculation stays disabled.
-- Enter `0` for sensor width and confirm calculation stays disabled.
-- Enter `0` for baseline distance and confirm calculation stays disabled.
-- Enter `0` for focus distance and confirm calculation stays disabled.
-- Enter focus distance `10` and entrance pupil offset `10`; confirm the app reports that focus distance must be greater than entrance pupil offset.
-- Enter entrance pupil offset `-1`; confirm the offset field is marked invalid and calculation stays disabled.
+- Confirm calculation is blocked or warnings appear for missing required fields.
+- Confirm invalid/zero/negative baseline values are handled safely.
+- Confirm impossible optical distance values are handled safely.
 
-## Math Regression
+## Layout checks
 
-- Run `npm run syntax`.
-- Run `node tests/math-tests.mjs`.
-- Confirm all math fixtures pass.
+- Desktop: confirm image/points, measurements, results, and actions are aligned and usable.
+- Desktop wide screen: confirm right-side control sections remain visually aligned.
+- iOS Safari: confirm layout is usable.
+- Android Chrome: confirm no horizontal overflow at approximately 360px, 390px, 412px, and 430px widths.
+- Confirm directions/help sections do not block access to the main tool.
+
+## Regression
+
+- Run `npm test`.
+- Confirm all tests pass.
