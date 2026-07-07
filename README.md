@@ -4,7 +4,21 @@
 
 LIMNLENS is a camera-matching helper for stop-motion, miniature photography, and VFX work.
 
-It helps answer a simple question:
+Current status: `v0.1.0-alpha` preview.
+
+## Use It Online
+
+The easiest way to try LIMNLENS is to open the hosted webpage:
+
+https://limnmedia.github.io/limnlens/
+
+You do not need to install Git, Node, npm, or any developer tools to use the web version.
+
+Just open the page, load an image, pick two points, enter the real-world distance, and calculate.
+
+## What LIMNLENS Does
+
+LIMNLENS helps answer a simple question:
 
 **How big is the real world inside this image?**
 
@@ -18,36 +32,50 @@ This can help when you need to:
 - rebuild a camera view after something changes
 - understand field of view, scale, and effective focal length
 
-Think of it like a translator:
+LIMNLENS is a browser-based tool for calculating effective focal length (EFL) and related camera-matching metrics from real-world reference points. It is designed for stop-motion artists, cinematographers, students, and VFX technicians who need camera scale and field-of-view alignment across miniature shoots, multi-pass workflows, and live-action/CG crossovers.
 
-**Your image speaks in pixels.  
-Your set speaks in millimeters.  
-LIMNLENS helps translate between them.**
+## Beginner-Friendly Explanation
 
-## Overview
+LIMNLENS helps you compare a real-world measurement with the same distance in a photo.
 
-LIMNLENS is a browser-based tool for calculating effective focal length (EFL) and related camera-matching metrics from real-world reference points. It is designed for stop-motion artists, cinematographers, and VFX technicians who need camera scale, nodal offset, and field-of-view alignment across multi-pass workflows, miniature shoots, and live-action/CG crossovers.
+Your photo measures distance in pixels.
+Your set, model, ruler, or calibration card measures distance in millimeters.
 
-The app has no build step and no package-managed runtime dependencies. It does currently load KaTeX from a CDN for equation rendering, so a network connection is needed for the formatted math display unless KaTeX is vendored locally.
+LIMNLENS helps translate between those two worlds.
 
-## Key Features
+A simple way to start:
 
-- Effective focal length calculation from pixel distance, real-world measurements, and optical geometry
-- Interactive two-point picker and verifier for baseline precision
-- Manual entry for sensor size, physical baseline distance, focus distance, and entrance pupil offset
-- Calculation of pixel density, field of view, angle of view, EFL, crop factor, and 35mm equivalent focal length
-- Measurement confidence feedback for point spacing, edge placement, and sensitivity to small input errors
-- JSON export for saving a completed calculation profile
-- Educational geometry notes and equation rendering
-- Calibration target assets for chart-based workflows
+1. Find two clear points in your image.
+2. Measure the real distance between those same two points.
+3. Enter that distance into LIMNLENS.
+4. Run the calculation.
 
-## Local Development
+Good measuring objects include rulers, printed charts, square corners, marked cards, model-making parts, or any object with a known size.
 
-Because the app uses ES modules, serve it over HTTP instead of opening `index.html` directly from the filesystem.
+## How to Use LIMNLENS
 
-From the repository root:
+### Option 1: Use the hosted webpage
 
-```powershell
+Open:
+
+https://limnmedia.github.io/limnlens/
+
+Then:
+
+1. Load an image.
+2. Pick Point A and Point B.
+3. Enter the real-world baseline distance in millimeters.
+4. Enter sensor width and focus distance if known.
+5. Run the TPS calculation.
+6. Save the JSON profile if you want a record of the calculation.
+
+### Option 2: Run locally for development
+
+Only use this option if you want to work with the project files directly.
+
+Because the app uses ES modules, serve it over HTTP instead of opening `index.html` directly:
+
+```bash
 python -m http.server 8000
 ```
 
@@ -59,64 +87,7 @@ http://127.0.0.1:8000/
 
 No `npm install` or build command is required.
 
-## Testing
-
-The math regression tests are plain Node.js ES modules with no dependency install step:
-
-```powershell
-node tests/math-tests.mjs
-```
-
-You can also run:
-
-```powershell
-npm test
-```
-
-If PowerShell blocks `npm.ps1`, run `npm.cmd test` or use the direct Node command above.
-
-Manual browser checks are listed in [QA_CHECKLIST.md](QA_CHECKLIST.md).
-
-## Quick Start
-
-1. Open LIMNLENS in your browser.
-2. Load a photo from your shot.
-3. Pick two clear points in the image.
-4. Measure the real distance between those two points.
-5. Enter the real-world distance in millimeters.
-6. Enter your sensor size and focus distance if you know them.
-7. Run the calculation.
-8. Save the JSON profile for later use.
-
-Tip: A ruler, printed chart, measured set piece, or known model-making part will usually work better than a random object.
-
-## Three Point System, In Simple Words
-
-The Three Point System is a way to make camera matching easier by starting with clear reference points.
-
-LIMNLENS currently implements the first TPS workflow: a two-point measured baseline for camera scale. Future versions will expand this into multi-point lens maps and deeper camera-solving workflows.
-
-LIMNLENS begins with the first important step:
-
-**Measure a known distance in the image.**
-
-You do this by picking two points:
-
-**Point A** and **Point B**
-
-Then you enter the real distance between those points.
-
-LIMNLENS compares:
-
-**the distance in pixels**
-
-to
-
-**the distance in millimeters**
-
-From that comparison, it calculates camera scale, field of view, angle of view, and effective focal length.
-
-## Good Objects To Measure
+## Good Objects to Measure
 
 For the best results, pick two points that are easy to see in the image and easy to measure in real life.
 
@@ -131,14 +102,14 @@ Good choices include:
 
 The farther apart the two points are, the better the measurement usually is. Tiny measurements can work, but small clicking errors matter more.
 
-## Quick Reference: Common LEGO Dimensions
+## Optional Quick Reference: Common LEGO Dimensions
 
-LEGO pieces can be useful as quick measuring objects when nothing else is available.
+LEGO pieces can be useful as quick measuring objects when nothing else is available, but they are only one example. A ruler or printed calibration chart is usually better.
 
 Common LEGO system dimensions:
 
 | Part / Feature | Dimension |
-|---|---:|
+| --- | ---: |
 | 1 stud spacing / pitch | 8.0 mm |
 | 1 brick height | 9.6 mm |
 | 1 plate height | 3.2 mm |
@@ -195,13 +166,68 @@ Where:
 
 ## Known Limitations
 
+- This is an alpha/preview release.
+- Picker zoom/view modes are still basic.
 - Distortion modeling is represented in state but not yet fitted or applied.
 - JSON calculation profile export is available; import and multi-sample profile editing are planned.
 - YAML calibration profile export is planned but not implemented.
 - KaTeX is loaded from a CDN.
 - Browser-free math tests cover the TPS calculation fixtures; broader UI automation is not yet present.
 
-## License and Usage
+## Possible Future Improvements
+
+These are planned or possible directions, not promises for the current alpha release:
+
+- JSON profile import and validation
+- Improved picker view controls, such as fit-to-view and fixed zoom levels
+- Multiple measurement samples for stronger lens-scale estimates
+- Basic lens breathing map workflows
+- Dependency-free formula rendering
+- Additional printable calibration targets
+- Better production export formats after real workflow testing
+- Blender or USD camera metadata experiments
+
+## Local Development
+
+This section is only for people who want to run or edit the project files locally.
+
+If you just want to use LIMNLENS, use the hosted webpage above.
+
+Because the app uses ES modules, serve it over HTTP instead of opening `index.html` directly from the filesystem.
+
+From the repository root:
+
+```powershell
+python -m http.server 8000
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8000/
+```
+
+No `npm install` or build command is required.
+
+## Testing
+
+The math regression tests are plain Node.js ES modules with no dependency install step:
+
+```powershell
+npm test
+```
+
+You can also run the test file directly:
+
+```powershell
+node tests/math-tests.mjs
+```
+
+If PowerShell blocks `npm.ps1`, run `npm.cmd test` or use the direct Node command above.
+
+Manual browser checks are listed in [QA_CHECKLIST.md](QA_CHECKLIST.md).
+
+## License
 
 This project is licensed under the GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`). See [LICENSE](LICENSE) for details.
 
@@ -215,16 +241,6 @@ Please open an issue before submitting changes. Project changes should be review
 - [Visual Effects Society](https://www.visualeffectssociety.com)
 - [Camera Sensor Sizes - Wikipedia](https://en.wikipedia.org/wiki/Image_sensor_format)
 - [Laser Rangefinder - Wikipedia](https://en.wikipedia.org/wiki/Laser_rangefinder)
-
-## Coming Soon
-
-- YAML calibration profile export
-- JSON profile import and validation
-- Multiple-point TPS sequences for lens breathing mapping
-- Web-rendered ideal point placement guide
-- Dependency-free formula rendering
-- Community-submitted calibration charts
-- Blender camera rig and USD camera metadata integration
 
 ## Tagline
 
