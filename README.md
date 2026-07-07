@@ -2,7 +2,7 @@
 
 **Measure two points. Match the camera. Keep animating.**
 
-LIMNLENS is a camera-matching helper for stop-motion, miniature photography, and VFX work.
+LIMNLENS is a focal length calculator and camera-matching helper for stop-motion, miniature photography, and VFX work.
 
 Current status: `v0.1.0-alpha` preview.
 
@@ -14,15 +14,15 @@ https://limnmedia.github.io/limnlens/
 
 You do not need to install Git, Node, npm, or any developer tools to use the web version.
 
-Just open the page, load an image, pick two points, enter the real-world distance, and calculate.
+Just open the page, load an image, pick two points, enter the real-world distance, and calculate the camera-matching results.
 
 ## What LIMNLENS Does
 
 LIMNLENS helps answer a simple question:
 
-**How big is the real world inside this image?**
+**What focal length does this camera view imply?**
 
-You choose two points in a photo, measure how far apart those points are in real life, and LIMNLENS uses that to calculate useful camera-scale information.
+You choose two points in a photo, measure how far apart those points are in real life, and LIMNLENS uses that known distance to calculate effective focal length and related camera-matching information.
 
 This can help when you need to:
 
@@ -30,25 +30,25 @@ This can help when you need to:
 - line up a miniature set with digital elements
 - compare different passes of the same shot
 - rebuild a camera view after something changes
-- understand field of view, scale, and effective focal length
+- understand effective focal length, field of view, scale, and angle of view
 
-LIMNLENS is a browser-based tool for calculating effective focal length (EFL) and related camera-matching metrics from real-world reference points. It is designed for stop-motion artists, cinematographers, students, and VFX technicians who need camera scale and field-of-view alignment across miniature shoots, multi-pass workflows, and live-action/CG crossovers.
+LIMNLENS is a browser-based focal length calculator that uses real-world reference points to estimate effective focal length (EFL), field of view, angle of view, and related camera-matching metrics. It is designed for stop-motion artists, cinematographers, students, and VFX technicians who need focal length and field-of-view alignment across miniature shoots, multi-pass workflows, and live-action/CG crossovers.
 
 ## Beginner-Friendly Explanation
 
-LIMNLENS helps you compare a real-world measurement with the same distance in a photo.
+LIMNLENS calculates focal length by comparing a real-world measurement with the same distance in a photo.
 
 Your photo measures distance in pixels.
 Your set, model, ruler, or calibration card measures distance in millimeters.
 
-LIMNLENS helps translate between those two worlds.
+LIMNLENS uses that comparison to estimate the camera view.
 
 A simple way to start:
 
 1. Find two clear points in your image.
 2. Measure the real distance between those same two points.
 3. Enter that distance into LIMNLENS.
-4. Run the calculation.
+4. Run the calculation to estimate focal length and field of view.
 
 Good measuring objects include rulers, printed charts, square corners, marked cards, model-making parts, or any object with a known size.
 
@@ -66,7 +66,7 @@ Then:
 2. Pick Point A and Point B.
 3. Enter the real-world baseline distance in millimeters.
 4. Enter sensor width and focus distance if known.
-5. Run the TPS calculation.
+5. Run the TPS focal length calculation.
 6. Save the JSON profile if you want a record of the calculation.
 
 ### Option 2: Run locally for development
@@ -146,7 +146,7 @@ Import, multi-sample lens maps, and production-specific exports are planned futu
 
 ## Underlying Math
 
-LIMNLENS derives image scale from a known real-world distance and its measured pixel distance:
+LIMNLENS estimates focal length by first deriving image scale from a known real-world distance and its measured pixel distance:
 
 ```text
 px_per_mm = P_image / D_real
