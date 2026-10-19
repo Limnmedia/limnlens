@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="LIMNLENS Calibration Calculator: calculate effective focal length from one image, two picked points, and real-world measurements." />
+        <meta name="author" content="LIMNMEDIA" />
+        <meta name="robots" content="index, follow" />
+        <meta
+            name="keywords"
+            content="lens calibration, effective focal length, focal length calculator, camera matching, VFX, stop-motion, LIMNMEDIA" />
+
+        <meta property="og:title" content="LIMNLENS Calibration Calculator" />
+        <meta
+            property="og:description"
+            content="Calculate effective focal length from one image, two picked points, and real-world measurements." />
+        <meta property="og:image" content="https://limnmedia.github.io/limnlens/" />
+        <meta property="og:url" content="https://limnmedia.github.io/limnlens/" />
+        <meta property="og:type" content="website" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="LIMNLENS Calibration Calculator" />
+        <meta
+            name="twitter:description"
+            content="A fast calibration calculator for effective focal length, camera scale, and VFX matching." />
+        <meta name="twitter:image" content="https://limnmedia.github.io/limnlens/" />
+
+        <title>LIMNLENS Calibration Calculator</title>
+        <link rel="icon" type="image/png" sizes="512x512" href="./img/favicon.png?v=20260706" />
+        <link rel="apple-touch-icon" href="./img/favicon.png?v=20260706" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+        <script
+            defer
+            src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body);"
+            crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="./style_beta.css?v=20260706-single-column" />
+    </head>
+    <body>
+        <header class="app-header" role="banner" aria-label="LIMNMEDIA LIMNLENS">
+            <a class="brand-link" href="https://limnmedia.com">
+                <img id="logo" src="img/logo.png" alt="LIMNMEDIA logo" />
+            </a>
+            <div class="app-title-block">
+                <p class="app-kicker">LIMNMEDIA</p>
+                <h1 id="pageTitle" class="app-title">LIMNLENS <span>TPS Scale Calculator</span></h1>
+            </div>
+        </header>
+
+        <main id="mainUI">
+            <details class="quick-help">
+                <summary>Quick directions</summary>
+                <ol>
+                    <li>Load an image or use the test image.</li>
+                    <li>Pick Point A and Point B.</li>
+                    <li>Enter the real baseline distance, sensor width, and focus distance.</li>
+                    <li>Calculate, then save the JSON profile if the result looks right.</li>
+                </ol>
+            </details>
+
+            <section id="calculator" class="calculator-shell" aria-labelledby="calculatorTitle">
+                <h2 id="calculatorTitle" class="sr-only">Calibration Calculator</h2>
+
+                <div class="calculator-grid">
+                    <section id="imageThumbnailSection" class="tool-panel image-panel" aria-labelledby="pointPickerH2">
+                        <div class="panel-heading">
+                            <h3 id="pointPickerH2">Image and Points</h3>
+                        </div>
+
+                        <div class="thumbRow">
+                            <div class="thumbInfo">
+                                <div id="thumbnailLabel">No image loaded</div>
+                            </div>
+                            <div id="thumbnailWrapper">
+                                <img id="imageThumbnail" alt="Loaded image thumbnail" src="./img/img.png" />
+                            </div>
+                        </div>
+
+                        <div class="thumbControls">
+                            <input type="file" id="fileInput" accept="image/*" />
+                            <div class="action-row">
+                                <button id="loadImageBtn">Load Image</button>
+                                <button id="loadTestImageBtn" class="secondary-button">Use Test Image</button>
+                                <button id="resetWorkflowBtn" class="secondary-button" type="button">Reset</button>
+                            </div>
+                            <div class="pointControl">
+                                <button id="pickPoint1Btn" disabled>Pick Point A</button>
+                                <button id="verifyPoint1Btn" class="secondary-button" disabled>Verify A</button>
+                                <span id="point1Verified" class="status-indicator idle">Idle</span>
+                            </div>
+
+                            <div class="pointControl">
+                                <button id="pickPoint2Btn" disabled>Pick Point B</button>
+                                <button id="verifyPoint2Btn" class="secondary-button" disabled>Verify B</button>
+                                <span id="point2Verified" class="status-indicator idle">Idle</span>
+                            </div>
+                        </div>
+
+                        <div class="point-summary" aria-label="Selected point summary">
+                            <div class="status-row">
+                                <span class="label">Point A</span>
+                                <span id="pickedPoint1" class="value">--</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Point B</span>
+                                <span id="pickedPoint2" class="value">--</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Pixel Distance</span>
+                                <span id="pixelDistance" class="value result-inline">--</span>
+                            </div>
+                            <div class="status-row advanced-row">
+                                <span class="label">Image Center</span>
+                                <span id="imageCenter" class="value">--</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="controls-stack controls-panel">
+                    <section id="measurementPanel" class="tool-panel" aria-labelledby="measurementsTitle">
+                        <div class="panel-heading">
+                            <h3 id="measurementsTitle">Measurements</h3>
+                        </div>
+
+                        <div class="field-group required-fields" aria-label="Required measurements">
+                            <h4>Required</h4>
+                            <div class="form-field">
+                                <label for="baselineDistance">Real Distance Between Points (mm)</label>
+                                <p class="helper-text">The physical distance between Point A and Point B on your target.</p>
+                                <input type="number" id="baselineDistance" min="0" step="any" placeholder="e.g. 100" />
+                            </div>
+
+                            <div class="form-field">
+                                <label for="sensorWidth">Sensor Width (mm)</label>
+                                <p class="helper-text">Use the active imaging width from camera specs.</p>
+                                <input type="number" id="sensorWidth" min="0" step="any" placeholder="e.g. 36.0" />
+                            </div>
+
+                            <div class="form-field">
+                                <label for="focusDistance">Focus Distance (mm)</label>
+                                <p class="helper-text">Distance from the camera/sensor plane to the calibration target.</p>
+                                <input type="number" id="focusDistance" min="0" step="any" placeholder="e.g. 1000" />
+                            </div>
+                        </div>
+
+                        <details class="advanced-details">
+                            <summary>Optional precision inputs</summary>
+                            <div class="field-group optional-fields">
+                                <div class="form-field">
+                                    <label for="sensorHeight">Sensor Height (mm)</label>
+                                    <p class="helper-text">Optional. Used for vertical angle of view.</p>
+                                    <input type="number" id="sensorHeight" min="0" step="any" placeholder="e.g. 24.0" />
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="entrancePupilOffset">Entrance Pupil Offset (mm)</label>
+                                    <p class="helper-text">Optional. Leave this at 0 unless you measured the no-parallax point.</p>
+                                    <input type="number" id="entrancePupilOffset" min="0" step="any" value="0" placeholder="0" />
+                                </div>
+                            </div>
+                        </details>
+
+                        <button id="saveInputBtn" class="secondary-button" type="button">Review inputs</button>
+                        <button id="calculateTPSBtn" class="primary-action" type="button">Calculate focal length</button>
+                        <button id="saveCalculationBtn" class="secondary-button" type="button" disabled>Save calculation file</button>
+                        <p id="statusMessage" class="status-message">Ready</p>
+                    </section>
+
+                    <section id="focalLengthOverview" class="results-panel" aria-labelledby="resultsTitle">
+                        <div class="panel-heading">
+                            <h3 id="resultsTitle">Results</h3>
+                        </div>
+
+                        <div class="primary-result">
+                            <span class="label">Effective Focal Length</span>
+                            <strong><span id="displayEFL">--</span> mm</strong>
+                        </div>
+
+                        <div class="secondary-results">
+                            <div class="status-row">
+                                <span class="label">35mm Equivalent Focal Length</span>
+                                <span class="value"><span id="displayEqFL35">--</span> mm</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Horizontal Angle of View</span>
+                                <span class="value"><span id="displayAOV">--</span> degrees</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Vertical Angle of View</span>
+                                <span class="value"><span id="displayVerticalAOV">--</span> degrees</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Crop Factor</span>
+                                <span id="displayCropFactor" class="value">--</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Real Field of View</span>
+                                <span class="value"><span id="displayFOVReal">--</span> mm</span>
+                            </div>
+                        </div>
+
+                        <div id="confidencePanel" class="confidence-panel" aria-live="polite">
+                            <div class="compact-heading">
+                                <h4>Measurement Confidence</h4>
+                                <p id="displayConfidenceSummary">Calculate focal length to see confidence feedback.</p>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Confidence</span>
+                                <span id="displayConfidenceLevel" class="value">--</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Baseline</span>
+                                <span id="displayConfidenceBaseline" class="value">--</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Point Separation</span>
+                                <span class="value"><span id="displayPointSeparationPercent">--</span> of image width</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Point A From Center</span>
+                                <span class="value"><span id="displayCenterDistanceA">--</span> of half diagonal</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Point B From Center</span>
+                                <span class="value"><span id="displayCenterDistanceB">--</span> of half diagonal</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Closest Edge Margin</span>
+                                <span id="displayEdgeMargin" class="value">--</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Approx. EFL Shift per 1 px Pick Error</span>
+                                <span class="value"><span id="displayEflShiftPerPixel">--</span></span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Approx. EFL Shift per 1 mm Baseline Error</span>
+                                <span class="value"><span id="displayEflShiftPerBaselineMM">--</span></span>
+                            </div>
+                            <ul id="confidenceWarnings" class="confidence-warnings">
+                                <li>Warnings and cautions will appear here after calculation.</li>
+                            </ul>
+                        </div>
+
+                        <details id="manualDataDisplay" class="advanced-details">
+                            <summary>Review inputs and advanced details</summary>
+                            <div class="status-row">
+                                <span class="label">Sensor Width</span>
+                                <span class="value"><span id="displaySensorWidth">--</span> mm</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Sensor Height</span>
+                                <span class="value"><span id="displaySensorHeight">--</span> mm</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Image Width</span>
+                                <span class="value"><span id="displayImageWidth">--</span> px</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Image Height</span>
+                                <span class="value"><span id="displayImageHeight">--</span> px</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Pixel Distance</span>
+                                <span class="value"><span id="displayBaselineDistancePX">--</span> px</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Real Distance Between Points</span>
+                                <span class="value"><span id="displayBaselineDistance">--</span> mm</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Focus Distance</span>
+                                <span class="value"><span id="displayFocusDistance">--</span> mm</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Entrance Pupil Offset</span>
+                                <span class="value"><span id="displayDelta">--</span> mm</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Pixel Density</span>
+                                <span class="value"><span id="displayPxPerMM">--</span> px/mm</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Optical Distance</span>
+                                <span class="value"><span id="displayDOptical">--</span> mm</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Formula Pixel Distance (P)</span>
+                                <span class="value"><span id="displayPImage">--</span> px</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Formula Real Distance (D)</span>
+                                <span class="value"><span id="displayDReal">--</span> mm</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Formula Image Width</span>
+                                <span class="value"><span id="displayWImage">--</span> px</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Formula Sensor Width</span>
+                                <span class="value"><span id="displayWSensor">--</span> mm</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="label">Formula Focus Distance</span>
+                                <span class="value"><span id="displayDSensor">--</span> mm</span>
+                            </div>
+                        </details>
+                    </section>
+                    </div>
+                </div>
+            </section>
+
+            <section id="guide" class="guide-shell" aria-labelledby="guideTitle">
+                <div class="section-heading">
+                    <p class="eyebrow">Teaching guide</p>
+                    <h2 id="guideTitle">Learn the Calibration Workflow</h2>
+                    <p>Open only the sections you need. The calculator above remains the primary tool.</p>
+                </div>
+
+                <details class="guide-card">
+                    <summary>How to capture a calibration image</summary>
+                    <ul>
+                        <li>Use a tripod or locked camera position.</li>
+                        <li>Keep the target flat and visible, with two measurable high-contrast points.</li>
+                        <li>Use enough resolution that point selection is precise.</li>
+                        <li>Record focus distance from the sensor plane to the target.</li>
+                    </ul>
+                </details>
+
+                <details class="guide-card">
+                    <summary>How to choose good points</summary>
+                    <p>
+                        Pick two points that are sharp, high-contrast, and separated by a known physical distance. Wider
+                        spacing generally improves precision because one-pixel picking errors matter less.
+                    </p>
+                </details>
+
+                <details class="guide-card">
+                    <summary>How to measure sensor width</summary>
+                    <p>
+                        Use the active sensor width in millimeters from camera documentation or reliable sensor-size
+                        references. This value anchors the focal length calculation.
+                    </p>
+                </details>
+
+                <details class="guide-card">
+                    <summary>What is entrance pupil offset?</summary>
+                    <p>
+                        Entrance pupil offset is the distance from the sensor plane to the no-parallax point of the lens.
+                        Leave it at 0 unless you measured it with a nodal slide or similar rig.
+                    </p>
+                </details>
+
+                <details class="guide-card">
+                    <summary>Basic formula</summary>
+                    <div class="latex-block">$$ \text{px/mm} = \frac{P_{\text{image}}}{D_{\text{real}}} $$</div>
+                    <div class="latex-block">$$ FOV_{\text{real}} = \frac{W_{\text{image}}}{\text{px/mm}} $$</div>
+                    <div class="latex-block">
+                        $$ \theta = 2 \cdot \tan^{-1}\left(\frac{FOV_{\text{real}}}{2 \cdot d_{\text{optical}}}\right) $$
+                    </div>
+                    <div class="latex-block">
+                        $$ EFL = \frac{W_{\text{sensor}}}{2 \cdot \tan(\theta / 2)} $$
+                    </div>
+                </details>
+
+                <details class="guide-card">
+                    <summary>Advanced TPS / VFX notes</summary>
+                    <p>
+                        Effective focal length helps match field of view and scale for miniature photography, stop-motion
+                        passes, matchmoving, and CG camera reconstruction. Distortion and lens breathing are not solved by
+                        this single-frame calculator; capture multiple focus distances for more complete mapping.
+                    </p>
+                </details>
+            </section>
+
+            <div id="pickerOverlay" class="fullscreenOverlay">
+                <div id="pickerButtonBar">
+                    <button id="selectBtn">Select Point</button>
+                </div>
+                <div id="pickCrosshair" class="crosshair"></div>
+                <canvas id="pickCanvas"></canvas>
+            </div>
+
+            <div id="verifyOverlay" class="fullscreenOverlay">
+                <div id="verifyButtonBar">
+                    <button id="confirmBtn">Confirm Point</button>
+                    <button id="selectNewBtn">Select New Point</button>
+                </div>
+                <div id="verifyCrosshair" class="crosshair"></div>
+                <canvas id="verifyCanvas"></canvas>
+            </div>
+        </main>
+
+        <footer id="appFooter">
+            <div class="footer-content">
+                <p>
+                    (c) 2025 LIMNMEDIA - LIMNLENS is licensed under AGPL-3.0-or-later.
+                </p>
+                <p>
+                    <a href="https://github.com/Limnmedia/limnlens" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                </p>
+            </div>
+        </footer>
+
+        <script type="module" src="./main.js?v=20260706-wide"></script>
+    </body>
+</html>

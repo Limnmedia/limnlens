@@ -1,155 +1,247 @@
-LIMNMEDIA LENSMap
+# LIMNLENS
 
-Stop-Motion and Cinematic Miniature Calibration Tool
-[WIP Draft v1.0]
+**Measure two points. Match the camera. Keep animating.**
 
-⸻
+LIMNLENS is a focal length calculator and camera-matching helper for stop-motion, miniature photography, and VFX work.
 
-🚀 About
+Current status: `v0.1.0-alpha` preview.
 
-LENSMap is an open-source calibration system designed to map and document the optical behavior of camera+lens systems for stop-motion, miniature VFX, and precision cinematography workflows.
+## Use It Online
 
-Built by Christopher Weinberg, member of the VES, ASIFA, and NATAS,
-LENSMap introduces an educational, modular, and production-ready method to record:
-	•	True pixel density across the image plane
-	•	Effective focal length shifts across focus range (breathing)
-	•	Real-world scaling for Three Point System (TPS) multipass shooting
-	•	Entrance pupil offsets for nodal camera matching
-	•	Baseline measurements for accurate CG-practical integration
+The easiest way to try LIMNLENS is to open the hosted webpage:
 
-LENSMap profiles are structured to be human-readable (YAML, JSON) and future-proofed for cinematic optical modeling.
+https://limnmedia.github.io/limnlens/
 
-⸻
+You do not need to install Git, Node, npm, or any developer tools to use the web version.
 
-📚 Key Features
+Just open the page, load an image, pick two points, enter the real-world distance, and calculate the camera-matching results.
 
-✅ Load calibration images and parse EXIF metadata
-✅ Pick and verify points for precise baseline measurement
-✅ Calculate pixel density (px/mm) and effective focal length (EFL)
-✅ Track entrance pupil offsets
-✅ Export standardized LENSMap profiles (v1.0 schema)
-✅ Modular design (Canvas handler, Picker, Verifier, EXIF parser)
-✅ Built with future extensions for:
-	•	Full breathing curves
-	•	Distortion models
-	•	Diopter compensation
-	•	Bellows extension mapping
+## What LIMNLENS Does
 
-⸻
+LIMNLENS helps answer a simple question:
 
-📈 Why LENSMap?
-	•	Stop-motion cinematography has historically lacked industry-standard optical profiles.
-	•	Miniature VFX demands precise real-world scaling, nodal accuracy, and multipass registration.
-	•	LENSMap bridges the gap between handcrafted cinematography and production-grade VFX calibration.
+**What focal length does this camera view imply?**
 
-No more “one-take wonder” limits —
-LENSMap empowers you to treat stop-motion cinematography as a precision VFX platform.
+You choose two points in a photo, measure how far apart those points are in real life, and LIMNLENS uses that known distance to calculate effective focal length and related camera-matching information.
 
-⸻
+This can help when you need to:
 
-🔧 Project Structure
+- match a real camera to a CG camera
+- line up a miniature set with digital elements
+- compare different passes of the same shot
+- rebuild a camera view after something changes
+- understand effective focal length, field of view, scale, and angle of view
 
-limnlens/
-├── src/
-│   ├── modules/       # State, canvas handling, picking, verifying
-│   ├── ui/            # Styles, logos, UI helpers
-│   └── index.html     # Main frontend interface
-├── data/
-│   ├── imports/       # External sensor databases
-│   ├── processed/     # Curated camera/lens metadata
-│   └── lens_profiles/ # Exported LENSMap calibration profiles
-├── img/
-│   └── production/    # Calibration charts, real-world test images
-├── docs/              # Project specifications, draft standards
-├── tests/             # Unit tests and assets
-├── tools/             # Future CLI/API tools
-├── README.md          # (this file)
-└── LICENSE
+LIMNLENS is a browser-based focal length calculator that uses real-world reference points to estimate effective focal length (EFL), field of view, angle of view, and related camera-matching metrics. It is designed for stop-motion artists, cinematographers, students, and VFX technicians who need focal length and field-of-view alignment across miniature shoots, multi-pass workflows, and live-action/CG crossovers.
 
+## Beginner-Friendly Explanation
 
+LIMNLENS calculates focal length by comparing a real-world measurement with the same distance in a photo.
 
-⸻
+Your photo measures distance in pixels.
+Your set, model, ruler, or calibration card measures distance in millimeters.
 
-🛠️ Quick Start (Developer Setup)
+LIMNLENS uses that comparison to estimate the camera view.
 
-git clone https://github.com/youruser/limnlens.git
-cd limnlens
-npm install   # (for dev tooling, optional)
-open src/index.html   # Or use a simple Python server to run locally
+A simple way to start:
 
+1. Find two clear points in your image.
+2. Measure the real distance between those same two points.
+3. Enter that distance into LIMNLENS.
+4. Run the calculation to estimate focal length and field of view.
 
+Good measuring objects include rulers, printed charts, square corners, marked cards, model-making parts, or any object with a known size.
 
-⸻
+## How to Use LIMNLENS
 
-📖 Using LENSMap
-	1.	Research: Confirm camera sensor size from database.
-	2.	Capture: Photograph a calibration target with manual settings.
-	3.	Load: Import the image into LENSMap.
-	4.	Pick: Place two points across a known physical baseline.
-	5.	Verify: Center and confirm picked points.
-	6.	Calculate: Pixel density, effective focal length.
-	7.	Export: Save a .json or .yaml LENSMap Profile.
+### Option 1: Use the hosted webpage
 
-⸻
+Open:
 
-🌟 Vision Roadmap
+https://limnmedia.github.io/limnlens/
 
-Phase	Goal
-Phase 1	Core calibration workflow for prime lenses (static focal length)
-Phase 1.5	Calibration Target ID tracking, Lens breathing maps
-Phase 2	Full optical models (Zoom curves, Diopters, Bellows, Distortion)
-Phase 2+	Open standard API for VFX tools and stop-motion pipelines
+Then:
 
+1. Load an image.
+2. Pick Point A and Point B.
+3. Enter the real-world baseline distance in millimeters.
+4. Enter sensor width and focus distance if known.
+5. Run the TPS focal length calculation.
+6. Save the JSON profile if you want a record of the calculation.
 
+### Option 2: Run locally for development
 
-⸻
+Only use this option if you want to work with the project files directly.
 
-🤝 Contributing
+Because the app uses ES modules, serve it over HTTP instead of opening `index.html` directly:
 
-Want to help extend LENSMap?
-	•	Fix bugs, expand database imports
-	•	Create calibration chart templates
-	•	Help define Phase 2 optical models
-	•	Improve mobile/touch UX
+```bash
+python -m http.server 8000
+```
 
-Pull Requests welcome! ✨
+Then open:
 
-⸻
+```text
+http://127.0.0.1:8000/
+```
 
-📝 License
+No `npm install` or build command is required.
 
-This project is licensed under the MIT License.
-Open forever. For stop-motion artists, cinematographers, and VFX creators.
+## Good Objects to Measure
 
-⸻
+For the best results, pick two points that are easy to see in the image and easy to measure in real life.
 
-📢 Acknowledgements
-	•	Academy Software Foundation (ASWF) for inspiring open-source cinematic tool standards
-	•	VES, ASIFA, and NATAS for shaping professional craft traditions
-	•	Community builders in stop-motion and VFX who keep the art evolving
+Good choices include:
 
-⸻
+- marks on a ruler
+- corners of a printed calibration chart
+- corners of a square or rectangle
+- dots on a measuring card
+- known parts of a miniature set
+- common model-making pieces with known dimensions
 
-✨
+The farther apart the two points are, the better the measurement usually is. Tiny measurements can work, but small clicking errors matter more.
 
-If you can measure it, you can control it.
+## Optional Quick Reference: Common LEGO Dimensions
 
-LENSMap: Bring stop-motion into the future — one calibrated frame at a time.
+LEGO pieces can be useful as quick measuring objects when nothing else is available, but they are only one example. A ruler or printed calibration chart is usually better.
 
-⸻
+Common LEGO system dimensions:
 
-📋 Notes
-	•	Versioned Profile Spec: LENSMap Profile v1.0 Specification (draft)
-	•	Database Datasets: CameraSensorSizeDatabase, RawTherapee EXIF exports, Academy Standard Sensor Lists
+| Part / Feature | Dimension |
+| --- | ---: |
+| 1 stud spacing / pitch | 8.0 mm |
+| 1 brick height | 9.6 mm |
+| 1 plate height | 3.2 mm |
+| 3 plates stacked | 9.6 mm |
+| Stud diameter | about 4.8 mm |
+| Stud height | about 1.8 mm |
+| 1 x 1 brick footprint | 8.0 x 8.0 mm |
+| 1 x 2 brick footprint | 8.0 x 16.0 mm |
+| 2 x 2 brick footprint | 16.0 x 16.0 mm |
+| 2 x 4 brick footprint | 16.0 x 32.0 mm |
 
-⸻
+Example:
 
-📦 Ready to use in your studio?
+If you click the left and right outside edges of a 2 x 4 brick, the real-world baseline is about **32 mm**.
 
-👉 Let’s map the future.
+If you click across four studs from center to center, the baseline is usually:
 
-⸻
+**3 spaces x 8 mm = 24 mm**
 
-📋 End of README Draft v1.0
+because the distance between centers counts the spaces between studs, not the number of studs.
 
-⸻
+## Saved Calculation Profile
+
+The saved `.json` file is a calculation record, not a full editable project file yet. It includes:
+
+- `app`: LIMNLENS name, version, profile version, license, and creation timestamp
+- `image`: source filename, pixel dimensions, MIME type, size, and last-modified metadata when available
+- `points`: Point A, Point B, and measured pixel distance
+- `measurements`: real baseline distance, sensor size, focus distance, and entrance pupil offset
+- `results`: effective focal length, 35mm equivalent focal length, angle of view, crop factor, real field of view, pixel density, optical distance, and millimeters per pixel
+- `confidence`: point-placement checks, stability notes, and approximate sensitivity values
+
+Import, multi-sample lens maps, and production-specific exports are planned future additions.
+
+## Underlying Math
+
+LIMNLENS estimates focal length by first deriving image scale from a known real-world distance and its measured pixel distance:
+
+```text
+px_per_mm = P_image / D_real
+FOV_real = W_image / px_per_mm
+AOV = 2 * atan(FOV_real / (2 * (d_sensor - Delta)))
+EFL = W_sensor / (2 * tan(AOV / 2))
+```
+
+Where:
+
+- `P_image`: baseline distance in pixels
+- `D_real`: baseline distance in millimeters
+- `W_image`: image width in pixels
+- `W_sensor`: sensor width in millimeters
+- `d_sensor`: focus distance from sensor to subject
+- `Delta`: entrance pupil / nodal offset in millimeters
+
+## Known Limitations
+
+- This is an alpha/preview release.
+- Picker zoom/view modes are still basic.
+- Distortion modeling is represented in state but not yet fitted or applied.
+- JSON calculation profile export is available; import and multi-sample profile editing are planned.
+- YAML calibration profile export is planned but not implemented.
+- KaTeX is loaded from a CDN.
+- Browser-free math tests cover the TPS calculation fixtures; broader UI automation is not yet present.
+
+## Possible Future Improvements
+
+These are planned or possible directions, not promises for the current alpha release:
+
+- JSON profile import and validation
+- Improved picker view controls, such as fit-to-view and fixed zoom levels
+- Multiple measurement samples for stronger lens-scale estimates
+- Basic lens breathing map workflows
+- Dependency-free formula rendering
+- Additional printable calibration targets
+- Better production export formats after real workflow testing
+- Blender or USD camera metadata experiments
+
+## Local Development
+
+This section is only for people who want to run or edit the project files locally.
+
+If you just want to use LIMNLENS, use the hosted webpage above.
+
+Because the app uses ES modules, serve it over HTTP instead of opening `index.html` directly from the filesystem.
+
+From the repository root:
+
+```powershell
+python -m http.server 8000
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8000/
+```
+
+No `npm install` or build command is required.
+
+## Testing
+
+The math regression tests are plain Node.js ES modules with no dependency install step:
+
+```powershell
+npm test
+```
+
+You can also run the test file directly:
+
+```powershell
+node tests/math-tests.mjs
+```
+
+If PowerShell blocks `npm.ps1`, run `npm.cmd test` or use the direct Node command above.
+
+Manual browser checks are listed in [QA_CHECKLIST.md](QA_CHECKLIST.md).
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`). See [LICENSE](LICENSE) for details.
+
+## Contributing
+
+Please open an issue before submitting changes. Project changes should be reviewed and approved by Cade before merge.
+
+## Links
+
+- [LIMNMEDIA Website](https://limnmedia.com)
+- [Visual Effects Society](https://www.visualeffectssociety.com)
+- [Camera Sensor Sizes - Wikipedia](https://en.wikipedia.org/wiki/Image_sensor_format)
+- [Laser Rangefinder - Wikipedia](https://en.wikipedia.org/wiki/Laser_rangefinder)
+
+## Tagline
+
+**Lock down the lens. Unlock the shot.**
