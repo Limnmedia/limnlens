@@ -1,46 +1,155 @@
-# LimnLens
+LIMNMEDIA LENSMap
 
-**Stop-Motion Lens Breathing Mapping & Effective Focal Length Tracking**
+Stop-Motion and Cinematic Miniature Calibration Tool
+[WIP Draft v1.0]
 
----
+⸻
 
-## Overview
+🚀 About
 
-**LimnLens** is an open-source calibration tool for tracking lens characteristics used in stop-motion and visual effects production, with a focus on:
+LENSMap is an open-source calibration system designed to map and document the optical behavior of camera+lens systems for stop-motion, miniature VFX, and precision cinematography workflows.
 
-- 📏 **Effective Focal Length (EFL)** calculation across varying focus distances
-- 🎞️ **Lens breathing mapping**, useful for animation continuity and multipass compositing
-- 🔧 A practical method for estimating focal length from pixel density (pixels per mm)
+Built by Christopher Weinberg, member of the VES, ASIFA, and NATAS,
+LENSMap introduces an educational, modular, and production-ready method to record:
+	•	True pixel density across the image plane
+	•	Effective focal length shifts across focus range (breathing)
+	•	Real-world scaling for Three Point System (TPS) multipass shooting
+	•	Entrance pupil offsets for nodal camera matching
+	•	Baseline measurements for accurate CG-practical integration
 
-This tool is designed to support motion control workflows, accurate camera matching, and lens profiling pipelines in stop-motion cinematography and miniature VFX setups.
+LENSMap profiles are structured to be human-readable (YAML, JSON) and future-proofed for cinematic optical modeling.
 
----
+⸻
 
-## Why This Matters
+📚 Key Features
 
-In professional stop-motion production, camera moves are often repeated across passes, and even subtle changes in focal length due to **focus breathing** can break compositing accuracy.
+✅ Load calibration images and parse EXIF metadata
+✅ Pick and verify points for precise baseline measurement
+✅ Calculate pixel density (px/mm) and effective focal length (EFL)
+✅ Track entrance pupil offsets
+✅ Export standardized LENSMap profiles (v1.0 schema)
+✅ Modular design (Canvas handler, Picker, Verifier, EXIF parser)
+✅ Built with future extensions for:
+	•	Full breathing curves
+	•	Distortion models
+	•	Diopter compensation
+	•	Bellows extension mapping
 
-LimnLens helps:
-- Standardize **EFL tables** for each lens at known focus distances
-- Calibrate **focus motors** in motion control rigs
-- Provide **animators and VFX artists** with trusted lens data for CG–practical integration
+⸻
 
----
+📈 Why LENSMap?
+	•	Stop-motion cinematography has historically lacked industry-standard optical profiles.
+	•	Miniature VFX demands precise real-world scaling, nodal accuracy, and multipass registration.
+	•	LENSMap bridges the gap between handcrafted cinematography and production-grade VFX calibration.
 
-## Data Format
+No more “one-take wonder” limits —
+LENSMap empowers you to treat stop-motion cinematography as a precision VFX platform.
 
-This repo begins with CSV-based data collection, including:
+⸻
 
-- `camera`
-- `lens`
-- `nominal_focal_length_mm`
-- `focus_distance_mm`
-- `effective_focal_length_mm`
-- `notes`
+🔧 Project Structure
 
-Example:
+limnlens/
+├── src/
+│   ├── modules/       # State, canvas handling, picking, verifying
+│   ├── ui/            # Styles, logos, UI helpers
+│   └── index.html     # Main frontend interface
+├── data/
+│   ├── imports/       # External sensor databases
+│   ├── processed/     # Curated camera/lens metadata
+│   └── lens_profiles/ # Exported LENSMap calibration profiles
+├── img/
+│   └── production/    # Calibration charts, real-world test images
+├── docs/              # Project specifications, draft standards
+├── tests/             # Unit tests and assets
+├── tools/             # Future CLI/API tools
+├── README.md          # (this file)
+└── LICENSE
 
-```csv
-camera,lens,nominal_focal_length_mm,focus_distance_mm,effective_focal_length_mm,notes
-Canon 5D Mk III,Canon 50mm,50.0,300,50.52,Measured with Siemens chart
-Pixel 7 Pro,Main Cam,4.6,150,4.66,Estimated from image metadata
+
+
+⸻
+
+🛠️ Quick Start (Developer Setup)
+
+git clone https://github.com/youruser/limnlens.git
+cd limnlens
+npm install   # (for dev tooling, optional)
+open src/index.html   # Or use a simple Python server to run locally
+
+
+
+⸻
+
+📖 Using LENSMap
+	1.	Research: Confirm camera sensor size from database.
+	2.	Capture: Photograph a calibration target with manual settings.
+	3.	Load: Import the image into LENSMap.
+	4.	Pick: Place two points across a known physical baseline.
+	5.	Verify: Center and confirm picked points.
+	6.	Calculate: Pixel density, effective focal length.
+	7.	Export: Save a .json or .yaml LENSMap Profile.
+
+⸻
+
+🌟 Vision Roadmap
+
+Phase	Goal
+Phase 1	Core calibration workflow for prime lenses (static focal length)
+Phase 1.5	Calibration Target ID tracking, Lens breathing maps
+Phase 2	Full optical models (Zoom curves, Diopters, Bellows, Distortion)
+Phase 2+	Open standard API for VFX tools and stop-motion pipelines
+
+
+
+⸻
+
+🤝 Contributing
+
+Want to help extend LENSMap?
+	•	Fix bugs, expand database imports
+	•	Create calibration chart templates
+	•	Help define Phase 2 optical models
+	•	Improve mobile/touch UX
+
+Pull Requests welcome! ✨
+
+⸻
+
+📝 License
+
+This project is licensed under the MIT License.
+Open forever. For stop-motion artists, cinematographers, and VFX creators.
+
+⸻
+
+📢 Acknowledgements
+	•	Academy Software Foundation (ASWF) for inspiring open-source cinematic tool standards
+	•	VES, ASIFA, and NATAS for shaping professional craft traditions
+	•	Community builders in stop-motion and VFX who keep the art evolving
+
+⸻
+
+✨
+
+If you can measure it, you can control it.
+
+LENSMap: Bring stop-motion into the future — one calibrated frame at a time.
+
+⸻
+
+📋 Notes
+	•	Versioned Profile Spec: LENSMap Profile v1.0 Specification (draft)
+	•	Database Datasets: CameraSensorSizeDatabase, RawTherapee EXIF exports, Academy Standard Sensor Lists
+
+⸻
+
+📦 Ready to use in your studio?
+
+👉 Let’s map the future.
+
+⸻
+
+📋 End of README Draft v1.0
+
+⸻

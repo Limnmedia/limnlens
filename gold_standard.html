@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TPS LENSMap — Dual Point Picker + Distance</title>
+<style>
+  body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #eee;
+  }
+  #mainUI {
+    padding: 2em;
+    text-align: center;
+  }
+  button {
+    padding: 0.8em 1.5em;
+    font-size: 1em;
+    background: #FED141;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    color: black;
+    margin: 0.5em;
+  }
+  #statusPanel {
+    margin-top: 2em;
+    font-size: 1.2em;
+    background: #fff;
+    padding: 1em;
+    border-radius: 8px;
+    display: inline-block;
+    text-align: left;
+  }
+  #fileInput { display: none; }
+
+  .fullscreenOverlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: black;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  #pickerButtonBar, #verifyButtonBar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 1em;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    z-index: 10001;
+  }
+  .crosshair {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10;
+  }
+  #pickCrosshair::before, #pickCrosshair::after {
+    content: '';
+    position: absolute;
+    background: red;
+  }
+  #pickCrosshair::before {
+    width: 2px; height: 40px;
+    top: -20px; left: 50%;
+    transform: translateX(-50%);
+  }
+  #pickCrosshair::after {
+    width: 40px; height: 2px;
+    left: -20px; top: 50%;
+    transform: translateY(-50%);
+  }
+  #verifyCrosshair::before, #verifyCrosshair::after {
+    content: '';
+    position: absolute;
+    background: lime;
+  }
+  #verifyCrosshair::before {
+    width: 2px; height: 50px;
+    top: -25px; left: 50%;
+    transform: translateX(-50%);
+  }
+  #verifyCrosshair::after {
+    width: 50px; height: 2px;
+    left: -25px; top: 50%;
+    transform: translateY(-50%);
+  }
+  canvas {
+    background: #fff;
+    cursor: grab;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="mainUI">
+  <h1>TPS LENSMap — Dual Point Picker + Distance</h1>
+  <input type="file" id="fileInput" accept="image/*">
+  <button id="loadImageBtn">📂 Load Image</button>
+  <br><br>
+  <button id="pickPoint1Btn" disabled>📍 Pick Point 1</button>
+  <button id="verifyPoint1Btn" disabled>🔍 Verify Point 1</button>
+  <br><br>
+  <button id="pickPoint2Btn" disabled>📍 Pick Point 2</button>
+  <button id="verifyPoint2Btn" disabled>🔍 Verify Point 2</button>
+
+  <div id="statusPanel">
+    <div><strong>Image Center:</strong> <span id="imageCenter">--</span></div>
+    <div><strong>Picked Point 1:</strong> <span id="pickedPoint1">--</span></div>
+    <div><strong>Picked Point 2:</strong> <span id="pickedPoint2">--</span></div>
+    <div><strong>Pixel Distance:</strong> <span id="pixelDistance">--</span></div>
+  </div>
+</div>
+
+<!-- Picker Overlay -->
+<div id="pickerOverlay" class="fullscreenOverlay">
+  <div id="pickerButtonBar">
+    <button id="selectBtn">✅ Select & Close</button>
+  </div>
+  <div id="pickCrosshair" class="crosshair"></div>
+  <canvas id="pickCanvas"></canvas>
+</div>
+
+<!-- Verifier Overlay -->
+<div id="verifyOverlay" class="fullscreenOverlay">
+  <div id="verifyButtonBar">
+    <button id="confirmBtn">✅ Confirm</button>
+    <button id="selectNewBtn">📍 Select New</button>
+  </div>
+  <div id="verifyCrosshair" class="crosshair"></div>
+  <canvas id="verifyCanvas"></canvas>
+</div>
+  
+<script>
+  console.log("[00]  HTML is working before script blocks load");
+</script>
+  
+<script>
+// Elements
+const fileInput = document.getElementById('fileInput');
+const loadImageBtn = document.getElementById('loadImageBtn');
+const pickPoint1Btn = document.getElementById('pickPoint1Btn');
+const pickPoint2Btn = document.getElementById('pickPoint2Btn');
+const verifyPoint1Btn = document.getElementById('verifyPoint1Btn');
+const verifyPoint2Btn = document.getElementById('verifyPoint2Btn');
+const selectBtn = document.getElementById('selectBtn');
+const confirmBtn = document.getElementById('confirmBtn');
+const selectNewBtn = document.getElementById('selectNewBtn');
+
+const imageCenterLabel = document.getElementById('imageCenter');
+const pickedPoint1Label = document.getElementById('pickedPoint1');
+const pickedPoint2Label = document.getElementById('pickedPoint2');
+const pixelDistanceLabel = document.getElementById('pixelDistance');
+
+const pickerOverlay = document.getElementById('pickerOverlay');
+const verifyOverlay = document.getElementById('verifyOverlay');
+const pickCanvas = document.getElementById('pickCanvas');
+const verifyCanvas = document.getElementById('verifyCanvas');
+
+// State
+const state = {
+  img: null,
+  point1: null,
+  point2: null,
+  currentPoint: null,
+  pickingPoint: 1, // 1 or 2
+  offsetX: 0,
+  offsetY: 0,
+  isDragging: false,
+  dragStartX: 0,
+  dragStartY: 0,
+};
+
+// 🚀 Core Functions
+loadImageBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', loadImage);
+pickPoint1Btn.addEventListener('click', () => startPicker(1));
+pickPoint2Btn.addEventListener('click', () => startPicker(2));
+selectBtn.addEventListener('click', selectPickedPoint);
+verifyPoint1Btn.addEventListener('click', () => startVerifier(1));
+verifyPoint2Btn.addEventListener('click', () => startVerifier(2));
+confirmBtn.addEventListener('click', () => verifyOverlay.style.display = 'none');
+selectNewBtn.addEventListener('click', selectNewPoint);
+
+function loadImage(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const img = new Image();
+    img.onload = () => {
+      state.img = img;
+      pickPoint1Btn.disabled = false;
+      pickPoint2Btn.disabled = false;
+      const cx = Math.round(img.naturalWidth / 2);
+      const cy = Math.round(img.naturalHeight / 2);
+      imageCenterLabel.textContent = `${cx}, ${cy}`;
+    };
+    img.src = evt.target.result;
+  };
+  reader.readAsDataURL(file);
+  console.warn("image loaded...");
+
+  
+}
+
+function startPicker(which) {
+  state.pickingPoint = which;
+  pickerOverlay.style.display = 'flex';
+  pickCanvas.width = window.innerWidth;
+  pickCanvas.height = window.innerHeight;
+  centerImage();
+  drawCanvas(pickCanvas);
+    console.warn("start picker loaded...");
+}
+
+function selectPickedPoint() {
+  const centerX = (pickCanvas.width / 2) - state.offsetX;
+  const centerY = (pickCanvas.height / 2) - state.offsetY;
+  if (state.pickingPoint === 1) {
+    state.point1 = { x: Math.round(centerX), y: Math.round(centerY) };
+    pickedPoint1Label.textContent = `${state.point1.x}, ${state.point1.y}`;
+    verifyPoint1Btn.disabled = false;
+  } else {
+    state.point2 = { x: Math.round(centerX), y: Math.round(centerY) };
+    pickedPoint2Label.textContent = `${state.point2.x}, ${state.point2.y}`;
+    verifyPoint2Btn.disabled = false;
+  }
+  updateDistance();
+  pickerOverlay.style.display = 'none';
+    console.warn("select picked point");
+}
+
+function startVerifier(which) {
+  state.pickingPoint = which;
+  verifyOverlay.style.display = 'flex';
+  verifyCanvas.width = window.innerWidth;
+  verifyCanvas.height = window.innerHeight;
+  if (which === 1) centerOnPoint(state.point1);
+  if (which === 2) centerOnPoint(state.point2);
+  animateVerify();
+    console.warn("verifier started...");
+}
+
+function selectNewPoint() {
+  const centerX = (verifyCanvas.width / 2) - state.offsetX;
+  const centerY = (verifyCanvas.height / 2) - state.offsetY;
+  if (state.pickingPoint === 1) {
+    state.point1 = { x: Math.round(centerX), y: Math.round(centerY) };
+    pickedPoint1Label.textContent = `${state.point1.x}, ${state.point1.y}`;
+  } else {
+    state.point2 = { x: Math.round(centerX), y: Math.round(centerY) };
+    pickedPoint2Label.textContent = `${state.point2.x}, ${state.point2.y}`;
+  }
+  updateDistance();
+    console.warn("new point selected");
+}
+
+function updateDistance() {
+  if (state.point1 && state.point2) {
+    const dx = state.point2.x - state.point1.x;
+    const dy = state.point2.y - state.point1.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    pixelDistanceLabel.textContent = dist.toFixed(2) + " px";
+      console.warn("distance updated");
+  }
+}
+
+function centerImage() {
+  state.offsetX = (pickCanvas.width - state.img.naturalWidth) / 2;
+  state.offsetY = (pickCanvas.height - state.img.naturalHeight) / 2;
+    console.warn("--> image centered <--");
+}
+
+function centerOnPoint(pt) {
+  if (!pt) return;
+  state.offsetX = (verifyCanvas.width / 2) - pt.x;
+  state.offsetY = (verifyCanvas.height / 2) - pt.y;
+    console.warn("image centered on point");
+}
+
+function drawCanvas(canvas, highlightPoint = null) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.save();
+  ctx.translate(state.offsetX, state.offsetY);
+  ctx.drawImage(state.img, 0, 0);
+  if (highlightPoint) {
+    ctx.fillStyle = 'lime';
+    ctx.beginPath();
+    ctx.arc(highlightPoint.x, highlightPoint.y, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(state.pickingPoint, highlightPoint.x, highlightPoint.y - 12);
+  }
+  ctx.restore();
+    console.warn("draw canvas!");
+}
+
+function animateVerify() {
+  function step() {
+    const pt = (state.pickingPoint === 1) ? state.point1 : state.point2;
+    if (!pt) return;
+    state.currentPoint = state.currentPoint || { x: pt.x, y: pt.y };
+    state.currentPoint.x += (pt.x - state.currentPoint.x) * 0.2;
+    state.currentPoint.y += (pt.y - state.currentPoint.y) * 0.2;
+    drawCanvas(verifyCanvas, state.currentPoint);
+      console.warn("animating!");
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// Setup unified dragging for picker and verifier canvas
+function setupDragging(canvas, isPicker) {
+  function getEventPosition(e) {
+    if (e.touches && e.touches.length > 0) {
+      return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    } else {
+      return { x: e.clientX, y: e.clientY };
+    }
+  }
+
+  function startDrag(e) {
+    e.preventDefault(); // Prevent scrolling on touch
+    const pos = getEventPosition(e);
+    state.isDragging = true;
+    state.dragStartX = pos.x;
+    state.dragStartY = pos.y;
+    canvas.style.cursor = 'grabbing';
+  }
+
+  function dragMove(e) {
+    if (!state.isDragging) return;
+    e.preventDefault();
+    const pos = getEventPosition(e);
+    const dx = pos.x - state.dragStartX;
+    const dy = pos.y - state.dragStartY;
+    state.offsetX += dx;
+    state.offsetY += dy;
+    state.dragStartX = pos.x;
+    state.dragStartY = pos.y;
+
+    if (isPicker) {
+      drawCanvas(pickCanvas);
+    }
+  }
+
+  function endDrag() {
+    state.isDragging = false;
+    canvas.style.cursor = 'grab';
+  }
+
+  // --- Mouse Events
+  canvas.addEventListener('mousedown', startDrag);
+  canvas.addEventListener('mousemove', dragMove);
+  canvas.addEventListener('mouseup', endDrag);
+  canvas.addEventListener('mouseleave', endDrag);
+
+  // --- Touch Events
+  canvas.addEventListener('touchstart', startDrag);
+  canvas.addEventListener('touchmove', dragMove);
+  canvas.addEventListener('touchend', endDrag);
+  canvas.addEventListener('touchcancel', endDrag);
+}
+setupDragging(pickCanvas, true);    // Picker canvas = immediate redraw
+setupDragging(verifyCanvas, false); // Verifier canvas = animation redraw
+</script>
+
+</body>
+</html>

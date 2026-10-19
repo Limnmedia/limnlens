@@ -1,0 +1,237 @@
+:root {
+  --pure-yellow: #FED141;
+  --pure-red: #E4002B;
+  --pure-blue: #0047BB;
+  --black: #000000;
+  --white: #FFFFFF;
+  --warm-grey: #7A7A7A;
+  --desat-yellow: #FCECA8;
+  --desat-red: #F5A2A2;
+  --desat-blue: #A2BFF5;
+}
+
+/* Base Page */
+body {
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  padding: 2em;
+  background: var(--warm-grey);
+  color: var(--black);
+}
+
+/* Logo */
+#logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  height: 60px;
+  width: auto;
+  z-index: 1000;
+}
+
+/* Canvas Container */
+#canvasContainer {
+  width: 60%;
+  max-width: 1000px;
+  margin: 2em auto;
+  padding: 1em;
+  background: var(--white);
+  border: 2px solid var(--black);
+  border-radius: 8px;
+  overflow: auto;
+}
+
+/* Canvas Wrapper */
+.canvasWrapper {
+  position: relative;
+  display: inline-block;
+  background: var(--white);
+  border: 2px solid var(--black);
+  border-radius: 6px;
+  max-width: 100%;
+  max-height: 60vh;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+  cursor: grab;
+  background: var(--white);
+  border-radius: 4px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2em;
+}
+
+td, th {
+  border: 1px solid var(--black);
+  padding: 8px 12px;
+}
+
+th {
+  background: var(--pure-yellow);
+  color: var(--black);
+  font-weight: bold;
+}
+
+/* Capture Step Sections */
+.captureStep, .workflowStep, .proTip {
+  background: var(--desat-yellow);
+  border: 2px solid var(--black);
+  padding: 1em;
+  margin-bottom: 1.5em;
+  border-radius: 8px;
+}
+
+/* Calculator */
+#tpsCalculator {
+  background: var(--desat-yellow);
+  border: 2px solid var(--black);
+  border-radius: 12px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  width: 70%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Buttons */
+button, #calcButton, #imgLoader {
+  background: var(--pure-blue);
+  color: var(--white);
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover, #calcButton:hover, #imgLoader:hover {
+  background: var(--desat-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Special Button Coloring */
+#calcButton {
+  background: var(--pure-red);
+}
+#calcButton:hover {
+  background: var(--desat-red);
+}
+
+/* Section: Status, Image Load, Pixel Distance */
+#StatusFileCalcHeader, #pixelDistanceBlock, #imageLoadHeader, #pickPointControls {
+  background: var(--white);
+  border: 2px solid var(--black);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem auto;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+#pixelDistanceBlock.section-loaded {
+  border: 4px dashed var(--pure-red);
+  background-color: var(--pure-yellow);
+  transition: background-color 0.3s ease, border 0.3s ease;
+}
+
+/* Expandable Details Block */
+details.customDetails {
+  width: 90%;
+  max-width: 900px;
+  margin: 2rem auto;
+  background: var(--white);
+  border: 2px solid var(--black);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+details.customDetails[open] {
+  background: var(--desat-yellow);
+}
+
+details.customDetails summary {
+  padding: 1rem;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: var(--black);
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  border: none;
+}
+
+details.customDetails summary::after {
+  content: "➔";
+  font-size: 1.2em;
+  transition: transform 0.3s ease;
+}
+
+details.customDetails[open] summary::after {
+  transform: rotate(90deg);
+}
+
+.crosshair {
+  position: relative; /* required */
+}
+
+/* Crosshair Target Styles */
+.crosshair::before, .crosshair::after {
+  content: '';
+  position: relative;
+  background: red;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+}
+#verifyCrosshair::before, #verifyCrosshair::after {
+  background: lime;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+}
+.crosshair::before {
+  width: 2px;
+  height: 40px;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.crosshair::after {
+  width: 40px;
+  height: 2px;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Responsive Mobile Adjustments */
+@media (max-width: 600px) {
+  body {
+    padding: 1em;
+  }
+
+  #canvasContainer {
+    width: 95%;
+  }
+
+  button {
+    width: 100%;
+    padding: 1em;
+    font-size: 1em;
+  }
+
+  #tpsCalculator, #StatusFileCalcHeader, #pixelDistanceBlock {
+    width: 95%;
+    padding: 1em;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+}

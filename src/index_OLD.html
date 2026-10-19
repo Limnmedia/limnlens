@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LIMNMEDIA TPS LENSMap</title>
+
+  <link rel="stylesheet" href="./ui/homestyle.css">
+
+  </head>
+<body>
+<header>
+  <img id="logo" src="../img/logo.png" alt="LIMNMEDIA Logo">
+</header>
+
+<!-- Fullscreen Picker Overlay -->
+<div id="pickerOverlay" class="overlay" style="display: none;">
+  <canvas id="pickerCanvas"></canvas>
+  <button onclick="confirmPick()">Confirm Pick</button>
+</div>
+
+<!-- Fullscreen Verify Overlay -->
+<div id="verifyOverlay" class="overlay" style="display: none;">
+  <canvas id="verifyCanvas"></canvas>
+  <button onclick="confirmVerify()">Confirm Verification</button>
+</div>
+  <h1>LIMNMEDIA LENSMap TPS Calibration Tool</h1>
+
+  <!-- Step 1: Research -->
+  <section class="stepSection">
+    <h2>Step 1: Research Your Equipment 📚</h2>
+    <details class="customDetails" open>
+      <summary>Understand Sensor Sizes, Distances, and Physical Setup</summary>
+      <div>
+        <p>Before capturing, you must know your camera's true sensor size, and prepare a physical measuring method (ruler, tape measure, laser). Sensor specs must be confirmed from the manufacturer or reliable source.</p>
+        <p><strong>Helpful Links:</strong></p>
+        <ul>
+          <li><a href="https://en.wikipedia.org/wiki/Image_sensor_format" target="_blank">Sensor Sizes Explained</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Laser_rangefinder" target="_blank">Laser Measuring Tools</a></li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- Step 2: Capture Guide -->
+  <section class="stepSection">
+    <h2>Step 2: Capture the Calibration Images 🎯</h2>
+    <details class="customDetails">
+      <summary>Guidelines for Image Capture</summary>
+      <div>
+        <p>Ensure the target is flat, perpendicular to camera, well-lit, and includes a known scale reference. Take high-resolution, uncropped images.</p>
+        <ul>
+          <li>Manual focus and exposure required.</li>
+          <li>No stabilization (turn IBIS/OIS off).</li>
+          <li>Use tripod or locked-down support.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+<!-- 📷 TPS Calibration Tool UI Layout -->
+<section id="tpsCalibrationUI" style="max-width: 900px; margin: 2rem auto; font-family: sans-serif;">
+
+  <h2>📸 Camera & Sensor Info</h2>
+  <label>Sensor Width (mm): <input type="number" id="W_sensor"></label><br>
+  <label>Camera Make: <input type="text" id="cameraMake"></label><br>
+  <label>Camera Model: <input type="text" id="cameraModel"></label>
+
+  <h2>🎥 Lens Info</h2>
+  <label>Focal Length (mm): <input type="number" id="focalLength"></label><br>
+  <label>Lens Model: <input type="text" id="lensModel"></label>
+
+  <h2>📏 Measurement Inputs</h2>
+  <label>Baseline Pixel Distance: <input type="number" id="P_image" readonly></label><br>
+  <label>Real Baseline Distance (mm): <input type="number" id="D_real"></label><br>
+  <label>Camera-to-Target Distance (mm): <input type="number" id="d_sensor"></label><br>
+  <label>Entrance Pupil Offset (mm): <input type="number" id="Delta" value="0"></label>
+
+  <h2>📐 TPS Calculated Outputs</h2>
+  <label>Pixels per mm: <input type="text" id="pxmm_scene" readonly></label><br>
+  <label>Real-World FOV (mm): <input type="text" id="FOV_real" readonly></label><br>
+  <label>Optical Distance (mm): <input type="text" id="d_optical" readonly></label><br>
+  <label>Angle of View (deg): <input type="text" id="AOV" readonly></label><br>
+  <label>Effective Focal Length (mm): <input type="text" id="EFL" readonly></label><br>
+  <label>Crop Factor: <input type="text" id="Crop" readonly></label><br>
+  <label>35mm Equivalent Focal Length: <input type="text" id="EqFL" readonly></label>
+
+  <h2>🛠️ Controls</h2>
+  <button id="calcButton">📐 Calculate</button>
+  <button id="exportJsonBtn">💾 Export JSON</button>
+  <button id="exportYamlBtn">💾 Export YAML</button>
+  <button id="resetButton">🔁 Reset</button>
+  <button id="testButton">🧪 Fill Test Data</button>
+
+  <h2>📋 Status</h2>
+  <p id="status">Status: Waiting for input...</p>
+
+  <h2>🔎 EXIF Dump</h2>
+  <pre id="exifRaw" style="background:#eee; padding:1em;"></pre>
+
+</section>
+
+
+  <!-- Step 3: Load Image -->
+  <section class="stepSection" id="imageLoadHeader">
+    <h2>Step 3: Load Calibration Image 📷</h2>
+    <p>Supported formats: JPEG</p>
+    <input type="file" id="imgLoader" accept="image/*">
+  </section>
+
+  <!-- Step 4: Pick Baseline Points -->
+  <section class="stepSection" id="pickPointControls">
+    <h2>Step 4: Pick Baseline Points 📍</h2>
+    <p>Align the center crosshair over a real-world known measurement. Pick two points that match a measurable baseline in the scene.</p>
+    <button id="pickPoint1Btn" disabled>Pick Point 1</button>
+    <button id="verifyPoint1Btn" disabled>Verify Point 1</button>
+    <br>
+    <button id="pickPoint2Btn" disabled>Pick Point 2</button>
+    <button id="verifyPoint2Btn" disabled>Verify Point 2</button>
+  </section>
+
+  <!-- Step 5: TPS Calculate -->
+  <section class="stepSection" id="tpsCalculator">
+    <h2>Step 5: Calculate TPS Scaling 📐</h2>
+    <p>Enter the known physical baseline distance (millimeters) below to calculate pixel density and focal length scaling.</p>
+    <form id="calcForm">
+      <fieldset>
+        <label for="baselineMM">Baseline Distance (mm):</label>
+        <input type="number" id="baselineMM" name="baselineMM" required>
+
+        <label for="baselinePixels">Baseline Pixel Distance:</label>
+        <input type="number" id="baselinePixels" name="baselinePixels" readonly>
+
+        <button type="button" id="calcButton">Calculate</button>
+      </fieldset>
+    </form>
+  </section>
+
+  <button onclick="exportProfileJSON()">Download JSON Profile</button>
+<button onclick="exportProfileYAML()">Download YAML Profile</button>
+  
+  
+  <!-- Results Display -->
+  <section class="stepSection" id="StatusFileCalcHeader">
+    <h2>Results</h2>
+    <div>
+      <p><strong>Status:</strong> <span id="status">Waiting for action...</span></p>
+      <p><strong>Picked Point 1:</strong> <span id="pickedPoint1">--</span></p>
+      <p><strong>Picked Point 2:</strong> <span id="pickedPoint2">--</span></p>
+      <p><strong>Pixel Distance:</strong> <span id="pixelDistance">--</span></p>
+    </div>
+  </section>
+
+  <!-- Optional: Full EXIF and Raw Data -->
+  <section class="stepSection">
+    <h2>Advanced: Full Image Metadata 📄</h2>
+    <details class="customDetails">
+      <summary>Show Raw EXIF Data</summary>
+      <div>
+        <pre id="rawExifBlock">(EXIF metadata will appear here after loading an image.)</pre>
+      </div>
+    </details>
+  </section>
+
+</main>
+
+<footer>
+  <p style="text-align:center;">LIMNMEDIA 2025 © All Rights Reserved</p>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/piexifjs"></script>
+<script type="module" src="./main.js" defer></script>
+
+</body>
+</html>

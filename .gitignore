@@ -59,3 +59,4 @@ __pycache__/
 # Ignore test outputs, debug logs
 *.log
 *.csv~
+/html/LENSMap-Profile-Creator/old/exifHandler.js
