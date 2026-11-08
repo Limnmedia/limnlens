@@ -1,3 +1,5 @@
+> **Historical design draft — not the current implementation or licensing authority.** This proposal includes an Apache-2.0 code-license recommendation; consult the repository root `LICENSE` and current README for the actual project license and supported features. The suggested license below was not adopted merely by appearing in this draft.
+
 # LIMN-LENS Specification Document (Draft v0.1)
 
 ## 🧠 Project Overview
